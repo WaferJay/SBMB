@@ -10,6 +10,7 @@ public interface UserService {
     User findByEmail(String email);
     User save(User user);
     void delete(long id);
+    boolean exists(long id);
 
     default void delete(User user) {
         delete(user.getId());

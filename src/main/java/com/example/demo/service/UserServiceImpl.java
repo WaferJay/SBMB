@@ -79,6 +79,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean exists(long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
     public void login(User user, boolean rememberMe) {
         // TODO: rememberMe 自动登录
         HttpSession session = interceptor.getCurrentSession();
