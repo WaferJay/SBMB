@@ -1,4 +1,4 @@
-package com.wanfajie.microblog.iinterceptor.login;
+package com.wanfajie.microblog.interceptor.login;
 
 import javax.servlet.http.HttpServletRequest;
 

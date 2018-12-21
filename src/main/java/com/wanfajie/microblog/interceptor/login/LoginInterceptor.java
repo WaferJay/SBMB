@@ -1,6 +1,6 @@
-package com.wanfajie.microblog.iinterceptor.login;
+package com.wanfajie.microblog.interceptor.login;
 
-import com.wanfajie.microblog.iinterceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

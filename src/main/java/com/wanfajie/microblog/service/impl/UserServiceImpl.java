@@ -1,8 +1,9 @@
-package com.wanfajie.microblog.service;
+package com.wanfajie.microblog.service.impl;
 
 import com.wanfajie.microblog.bean.User;
-import com.wanfajie.microblog.iinterceptor.SessionCookieService;
+import com.wanfajie.microblog.interceptor.SessionCookieService;
 import com.wanfajie.microblog.repository.UserRepository;
+import com.wanfajie.microblog.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

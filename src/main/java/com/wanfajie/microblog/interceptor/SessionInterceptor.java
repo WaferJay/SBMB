@@ -1,4 +1,4 @@
-package com.wanfajie.microblog.iinterceptor;
+package com.wanfajie.microblog.interceptor;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;

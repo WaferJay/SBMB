@@ -1,10 +1,11 @@
 package com.wanfajie.microblog.config;
 
-import com.wanfajie.microblog.iinterceptor.SessionInterceptor;
-import com.wanfajie.microblog.iinterceptor.login.LoginInterceptor;
+import com.wanfajie.microblog.interceptor.SessionInterceptor;
+import com.wanfajie.microblog.interceptor.login.LoginInterceptor;
 import com.wanfajie.microblog.service.UserService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import javax.annotation.Resource;
@@ -22,10 +23,17 @@ public class InterceptorConfiguration extends WebMvcConfigurationSupport {
     private UserService userService;
 
     @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/");
+
+        super.addResourceHandlers(registry);
+    }
+
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor)
                 .addPathPatterns("/**");
-
 
         loginInterceptor.setJudge(request -> userService.getCurrentUser() != null);
 

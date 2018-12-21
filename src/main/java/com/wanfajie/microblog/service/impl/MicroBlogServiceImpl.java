@@ -1,7 +1,8 @@
-package com.wanfajie.microblog.service;
+package com.wanfajie.microblog.service.impl;
 
 import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.repository.MicroBlogRepository;
+import com.wanfajie.microblog.service.MicroBlogService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

@@ -10,7 +10,7 @@ import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
 import com.wanfajie.microblog.controller.validator.LoginFormValidator;
 import com.wanfajie.microblog.controller.validator.UserSignUpValidator;
 import com.wanfajie.microblog.controller.validator.UserUpdateInfoValidator;
-import com.wanfajie.microblog.iinterceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.PasswordUtil;
 import com.wanfajie.microblog.util.ValidUtil;

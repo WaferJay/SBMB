@@ -7,7 +7,7 @@ import com.wanfajie.microblog.bean.form.MicroBlogForm;
 import com.wanfajie.microblog.controller.ajax.result.AjaxResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
 import com.wanfajie.microblog.controller.validator.MicroBlogFormValidator;
-import com.wanfajie.microblog.iinterceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import com.wanfajie.microblog.service.MediaFileService;
 import com.wanfajie.microblog.service.MicroBlogService;
 import com.wanfajie.microblog.service.UserService;

@@ -5,7 +5,7 @@ import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.controller.ajax.result.AjaxExceptionResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
-import com.wanfajie.microblog.iinterceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import com.wanfajie.microblog.service.MediaFileService;
 import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.FileUtil;

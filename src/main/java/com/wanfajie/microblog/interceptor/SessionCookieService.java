@@ -1,4 +1,4 @@
-package com.wanfajie.microblog.iinterceptor;
+package com.wanfajie.microblog.interceptor;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;

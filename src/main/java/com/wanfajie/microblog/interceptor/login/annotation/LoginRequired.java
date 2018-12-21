@@ -1,4 +1,4 @@
-package com.wanfajie.microblog.iinterceptor.login.annotation;
+package com.wanfajie.microblog.interceptor.login.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
