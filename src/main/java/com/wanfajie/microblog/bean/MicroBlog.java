@@ -1,6 +1,7 @@
 package com.wanfajie.microblog.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MicroBlog {
 
     // TODO: 赞和转载
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "mb_microblog_media_file",
             joinColumns = @JoinColumn(name = "micro_blog_id"),
             inverseJoinColumns = @JoinColumn(name = "media_file_id"))
@@ -70,6 +71,7 @@ public class MicroBlog {
 
     public void setAuthor(User author) {
         this.author = author;
+        this.authorId = author.getId();
     }
 
     public String getContent() {

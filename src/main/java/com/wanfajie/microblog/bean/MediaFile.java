@@ -1,5 +1,7 @@
 package com.wanfajie.microblog.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,6 +24,7 @@ public class MediaFile {
     @Column(name = "upload_ts")
     private long uploadTimestamp;
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
