@@ -125,6 +125,7 @@ public class ImageController {
                     .build();
         }
 
+        // XXX: 更合理的实现
         response.setStatus(200);
         response.setHeader("Content-Type", "image/" + suffix);
         try (InputStream is = new BufferedInputStream(new FileInputStream(filePath))) {

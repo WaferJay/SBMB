@@ -41,7 +41,7 @@ public class MicroBlogController {
     @Resource
     private MediaFileService mediaService;
 
-    @GetMapping(AjaxURLConfig.MicroBlog.FETCH_ONE_MICROBLOG)
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG)
     public AjaxResult getMicroBlog(@PathVariable("id") long blogId) {
         MicroBlog blog = mbService.findById(blogId);
 
@@ -52,7 +52,7 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", blog);
     }
 
-    @GetMapping(AjaxURLConfig.MicroBlog.FETCH_ALL_MICROBLOG)
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_FETCH)
     public AjaxResult getAllMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "20") int limit,
@@ -65,7 +65,7 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(resultPage));
     }
 
-    @DeleteMapping(AjaxURLConfig.MicroBlog.DELETE_MICROBLOG)
+    @DeleteMapping(AjaxURLConfig.MicroBlog.MICROBLOG)
     @LoginRequired
     public AjaxResult deleteMicroBlog(@PathVariable long id) {
         MicroBlog blog = mbService.findById(id);
@@ -84,7 +84,7 @@ public class MicroBlogController {
         }
     }
 
-    @PutMapping(AjaxURLConfig.MicroBlog.POST_MICROBLOG)
+    @PutMapping(AjaxURLConfig.MicroBlog.MICROBLOG_POST)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     @LoginRequired
@@ -127,7 +127,7 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", blog);
     }
 
-    @GetMapping(AjaxURLConfig.MicroBlog.FETCH_USER_MICROBLOG)
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_USER_FETCH)
     public AjaxResult getUserMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int pageNum,
             @RequestParam(value = "limit", defaultValue = "20") int limit,
@@ -145,7 +145,7 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(page));
     }
 
-    @GetMapping(AjaxURLConfig.MicroBlog.FETCH_SUB_MICROBLOG)
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_SUB_FETCH)
     public AjaxResult getSubMicroBlog() {
         // TODO:
         return null;

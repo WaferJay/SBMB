@@ -37,7 +37,7 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @RequestMapping(AjaxURLConfig.User.PING)
+    @RequestMapping(AjaxURLConfig.User.USER_PING)
     public AjaxResult ping() {
         User user = userService.getCurrentUser();
 
@@ -45,7 +45,7 @@ public class UserController {
         return new AjaxSingleResult<>(0, "请求成功", data);
     }
 
-    @PutMapping(AjaxURLConfig.User.REGISTER_USER)
+    @PutMapping(AjaxURLConfig.User.USER_REGISTER)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     public AjaxResult registerUser(@RequestBody SignUpForm form, BindingResult bindingResult) {
@@ -69,7 +69,7 @@ public class UserController {
         return result;
     }
 
-    @RequestMapping(value = AjaxURLConfig.User.FETCH_USER_INFO, method = RequestMethod.GET)
+    @RequestMapping(value = AjaxURLConfig.User.USER_INFO, method = RequestMethod.GET)
     public AjaxSingleResult<User> userInfo(@PathVariable("id") long id) {
         AjaxSingleResult<User> result = new AjaxSingleResult<>();
 
@@ -86,7 +86,7 @@ public class UserController {
         return result;
     }
 
-    @RequestMapping(value = AjaxURLConfig.User.UPDATE_USER_INFO, method = RequestMethod.POST)
+    @RequestMapping(value = AjaxURLConfig.User.USER_INFO, method = RequestMethod.POST)
     @LoginRequired(redirect = false)
     @Transactional
     public AjaxResult updateUserInfo(@PathVariable("id") long id, @RequestBody UserUpdateInfoForm form, BindingResult bindingResult) {

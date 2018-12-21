@@ -6,21 +6,19 @@ public interface AjaxURLConfig {
     String PREFIX_MICROBLOG = "/ajax/microblog";
 
     interface User {
-        String PING = PREFIX_USER + "/ping";
-        String REGISTER_USER = PREFIX_USER;
-        String FETCH_USER_INFO = PREFIX_USER + "/{id}";
-        String UPDATE_USER_INFO = PREFIX_USER + "/{id}";
+        String USER_PING = PREFIX_USER + "/ping";
+        String USER_REGISTER = PREFIX_USER;
+        String USER_INFO = PREFIX_USER + "/{id}";
         String USER_LOGIN = PREFIX_USER + "/login";
         String USER_LOGOUT = PREFIX_USER + "/logout";
     }
 
     interface MicroBlog {
-        String POST_MICROBLOG = PREFIX_MICROBLOG;
-        String FETCH_ONE_MICROBLOG = PREFIX_MICROBLOG + "/{id}";
-        String DELETE_MICROBLOG = PREFIX_MICROBLOG + "/{id}";
-        String FETCH_ALL_MICROBLOG = PREFIX_MICROBLOG;
-        String FETCH_USER_MICROBLOG = PREFIX_USER + "/{userId}/microblog";
-        String FETCH_SUB_MICROBLOG = PREFIX_MICROBLOG + "/subscribed";
+        String MICROBLOG_POST = PREFIX_MICROBLOG;
+        String MICROBLOG = PREFIX_MICROBLOG + "/{id}";
+        String MICROBLOG_FETCH = PREFIX_MICROBLOG;
+        String MICROBLOG_USER_FETCH = PREFIX_USER + "/{userId}/microblog";
+        String MICROBLOG_SUB_FETCH = PREFIX_MICROBLOG + "/subscribed";
     }
 
     interface Subscribe {
