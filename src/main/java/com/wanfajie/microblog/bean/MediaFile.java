@@ -13,11 +13,11 @@ public class MediaFile {
     @Column(name = "user_id", nullable = false)
     private long userId;
 
-    @Column(name = "media_type", nullable = false)
-    private int type;
-
     @Column(name = "file_path", nullable = false)
     private String path;
+
+    @Column(name = "file_suffix", nullable = false)
+    private String suffix;
 
     @Column(name = "upload_ts")
     private long uploadTimestamp;
@@ -26,10 +26,58 @@ public class MediaFile {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    @Column(name = "microblog_id", nullable = false)
-    private long microBlogId;
+    private MediaFile() {
+        uploadTimestamp = System.currentTimeMillis();
+    }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "microblog_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private MicroBlog blog;
+    public MediaFile(long userId, String path, String suffix) {
+        this();
+        this.userId = userId;
+        this.path = path;
+        this.suffix = suffix;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public long getUploadTimestamp() {
+        return uploadTimestamp;
+    }
+
+    public void setUploadTimestamp(long uploadTimestamp) {
+        this.uploadTimestamp = uploadTimestamp;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

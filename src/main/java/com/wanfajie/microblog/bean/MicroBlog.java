@@ -29,8 +29,10 @@ public class MicroBlog {
 
     // TODO: 赞和转载
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "microBlogId")
+    @ManyToMany
+    @JoinTable(name = "mb_microblog_media_file",
+            joinColumns = @JoinColumn(name = "micro_blog_id"),
+            inverseJoinColumns = @JoinColumn(name = "media_file_id"))
     private List<MediaFile> mediaFiles;
 
     public MicroBlog() {
@@ -38,6 +40,7 @@ public class MicroBlog {
     }
 
     public MicroBlog(long authorId, User author, String content, List<MediaFile> mediaFiles) {
+        this();
         this.authorId = authorId;
         this.author = author;
         this.content = content;
@@ -81,8 +84,8 @@ public class MicroBlog {
         return mediaFiles;
     }
 
-    public void setMediaFiles(List<MediaFile> mediaFiles) {
-        this.mediaFiles = mediaFiles;
+    public void setMediaFiles(List<MediaFile> files) {
+        mediaFiles = files;
     }
 
     public long getTimestamp() {

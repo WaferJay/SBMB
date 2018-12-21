@@ -1,5 +1,6 @@
 package com.wanfajie.microblog.controller.ajax;
 
+import com.wanfajie.microblog.bean.MediaFile;
 import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.bean.form.MicroBlogForm;
@@ -7,6 +8,7 @@ import com.wanfajie.microblog.controller.ajax.result.AjaxResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
 import com.wanfajie.microblog.controller.validator.MicroBlogFormValidator;
 import com.wanfajie.microblog.iinterceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.service.MediaFileService;
 import com.wanfajie.microblog.service.MicroBlogService;
 import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.PageUtil;
@@ -16,10 +18,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +37,9 @@ public class MicroBlogController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private MediaFileService mediaService;
 
     @GetMapping(AjaxURLConfig.MicroBlog.FETCH_ONE_MICROBLOG)
     public AjaxResult getMicroBlog(@PathVariable("id") long blogId) {
@@ -60,6 +67,7 @@ public class MicroBlogController {
 
     @PutMapping(AjaxURLConfig.MicroBlog.POST_MICROBLOG)
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     @LoginRequired
     public AjaxResult postMicroBlog(@RequestBody MicroBlogForm form, BindingResult bindingResult) {
         User currentUser = userService.getCurrentUser();
@@ -77,11 +85,23 @@ public class MicroBlogController {
             return new AjaxSingleResult<>(1, "表单错误", errors);
         }
 
+        List<MediaFile> imageList = new ArrayList<>();
+        for (long id : form.getPicIds()) {
+            MediaFile file = mediaService.findById(id);
+
+            if (file == null) {
+                return new AjaxResult(2, "没有该图片资源: " + id);
+            }
+
+            imageList.add(file);
+        }
+
         String content = form.getContent();
 
         MicroBlog blog = new MicroBlog();
         blog.setContent(content);
         blog.setAuthorId(currentUser.getId());
+        blog.setMediaFiles(imageList);
 
         mbService.save(blog);
 

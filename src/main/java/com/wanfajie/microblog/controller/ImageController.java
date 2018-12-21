@@ -1,19 +1,21 @@
 package com.wanfajie.microblog.controller;
 
+import com.wanfajie.microblog.bean.MediaFile;
+import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.controller.ajax.result.AjaxExceptionResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxResult;
+import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
+import com.wanfajie.microblog.iinterceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.service.MediaFileService;
+import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Path;
@@ -25,14 +27,17 @@ import java.util.Set;
 public class ImageController {
 
     @Resource
-    private ResourceLoader resourceLoader;
+    private MediaFileService mediaService;
 
     @Value("${spring.image.upload-path}")
     private String imageBasePathStr;
 
+    @Resource
+    private UserService userService;
+
     private File imageBasePathFile;
 
-    private static final Object IMAGE_BASE_PATH_LOCK = new Object();
+    private final Object IMAGE_BASE_PATH_LOCK = new Object();
 
     private File getImageBasePathFile() {
 
@@ -57,6 +62,7 @@ public class ImageController {
 
     @PostMapping("/image/upload")
     @ResponseBody
+    @LoginRequired
     public AjaxResult uploadImage(@RequestParam("image-file") MultipartFile imageFile) {
 
         String fileName = imageFile.getOriginalFilename();
@@ -88,7 +94,11 @@ public class ImageController {
             return new AjaxExceptionResult(2, e);
         }
 
-        return new AjaxResult(0, "成功: " + imagePath);
+        User user = userService.getCurrentUser();
+        MediaFile mediaFile = new MediaFile(user.getId(), imagePath, suffix);
+        mediaService.save(mediaFile);
+
+        return new AjaxSingleResult<>(0, "成功", mediaFile);
     }
 
     @GetMapping("/upload/images/{uuid}.{suffix}")
@@ -117,9 +127,44 @@ public class ImageController {
 
         response.setStatus(200);
         response.setHeader("Content-Type", "image/" + suffix);
-        try {
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filePath))) {
             OutputStream os = response.getOutputStream();
-            InputStream is = new BufferedInputStream(new FileInputStream(filePath));
+            byte[] buf = new byte[1024];
+            int count;
+
+            while ((count = is.read(buf)) > 0) {
+                os.write(buf, 0, count);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @GetMapping("/upload/images/{id}")
+    public ResponseEntity getImage(HttpServletResponse response, @PathVariable("id") long id) {
+        MediaFile fileInfo = mediaService.findById(id);
+
+        if (fileInfo == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        File filePath = getImageBasePathFile()
+                .toPath()
+                .resolve(fileInfo.getPath())
+                .toAbsolutePath()
+                .toFile();
+
+        if (!filePath.isFile() || !filePath.canRead()) {
+            return ResponseEntity.notFound()
+                    .build();
+        }
+
+        response.setStatus(200);
+        response.setHeader("Content-Type", "image/" + fileInfo.getSuffix());
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filePath))) {
+            OutputStream os = response.getOutputStream();
             byte[] buf = new byte[1024];
             int count;
 
