@@ -61,4 +61,14 @@ public class MicroBlogServiceImpl implements MicroBlogService {
 
         return page;
     }
+
+    @Override
+    public void delete(long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
+    public void delete(MicroBlog mb) {
+        repository.delete(mb);
+    }
 }

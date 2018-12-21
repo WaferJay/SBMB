@@ -17,6 +17,7 @@ public interface AjaxURLConfig {
     interface MicroBlog {
         String POST_MICROBLOG = PREFIX_MICROBLOG;
         String FETCH_ONE_MICROBLOG = PREFIX_MICROBLOG + "/{id}";
+        String DELETE_MICROBLOG = PREFIX_MICROBLOG + "/{id}";
         String FETCH_ALL_MICROBLOG = PREFIX_MICROBLOG;
         String FETCH_USER_MICROBLOG = PREFIX_USER + "/{userId}/microblog";
         String FETCH_SUB_MICROBLOG = PREFIX_MICROBLOG + "/subscribed";

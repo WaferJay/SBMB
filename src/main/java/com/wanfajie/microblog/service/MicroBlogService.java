@@ -15,4 +15,6 @@ public interface MicroBlogService {
         return findByUserId(user.getId(), pageable);
     }
     Page<MicroBlog> findByUserId(long userId, Pageable pageable);
+    void delete(long id);
+    void delete(MicroBlog mb);
 }

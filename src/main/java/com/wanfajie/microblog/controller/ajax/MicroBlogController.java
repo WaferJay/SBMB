@@ -65,6 +65,25 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(resultPage));
     }
 
+    @DeleteMapping(AjaxURLConfig.MicroBlog.DELETE_MICROBLOG)
+    @LoginRequired
+    public AjaxResult deleteMicroBlog(@PathVariable long id) {
+        MicroBlog blog = mbService.findById(id);
+
+        if (blog != null) {
+            User currentUser = userService.getCurrentUser();
+
+            if (blog.getAuthor().equals(currentUser)) {
+                mbService.delete(blog);
+                return new AjaxSingleResult<>(0, "删除成功", blog);
+            } else {
+                return new AjaxResult(403, "没有权限删除其他人的微博");
+            }
+        } else {
+            return new AjaxResult(404, "该微博不存在");
+        }
+    }
+
     @PutMapping(AjaxURLConfig.MicroBlog.POST_MICROBLOG)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
