@@ -3,7 +3,7 @@ package com.wanfajie.microblog.bean;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "mb_microblog_meida_file")
+@Table(name = "mb_microblog_media_file")
 public final class MicroBlogMediaFile {
 
     @EmbeddedId

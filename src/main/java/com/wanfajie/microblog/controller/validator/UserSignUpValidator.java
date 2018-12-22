@@ -2,6 +2,7 @@ package com.wanfajie.microblog.controller.validator;
 
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.bean.form.SignUpForm;
+import com.wanfajie.microblog.util.ValidUtil;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -15,8 +16,6 @@ import javax.persistence.criteria.Root;
 import java.util.regex.Pattern;
 
 public class UserSignUpValidator implements Validator {
-
-    private static Pattern P_EMAIL = Pattern.compile("^\\w+@\\w+(\\.\\w+)?$");
 
     private static UserSignUpValidator instance;
 
@@ -39,7 +38,7 @@ public class UserSignUpValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "此项必须填写");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "此项必须填写");
 
-        if (form.getEmail() != null && !isEmailAddress(form.getEmail())) {
+        if (form.getEmail() != null && !ValidUtil.isEmailAddress(form.getEmail())) {
             errors.rejectValue("email", "邮箱地址无效");
         }
 
@@ -54,10 +53,6 @@ public class UserSignUpValidator implements Validator {
                 errors.rejectValue("email", "邮箱地址已被注册");
             }
         }
-    }
-
-    public static boolean isEmailAddress(String email) {
-        return P_EMAIL.matcher(email).matches();
     }
 
     private User findByNameOrEmail(String name, String email) {

@@ -25,7 +25,7 @@ public class MediaFile {
     private long uploadTimestamp;
 
     @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
+    @ManyToOne(cascade = CascadeType.DETACH, optional = false)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 

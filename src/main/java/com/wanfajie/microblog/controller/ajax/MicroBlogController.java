@@ -66,6 +66,7 @@ public class MicroBlogController {
     }
 
     @DeleteMapping(AjaxURLConfig.MicroBlog.MICROBLOG)
+    @Transactional
     @LoginRequired
     public AjaxResult deleteMicroBlog(@PathVariable long id) {
         MicroBlog blog = mbService.findById(id);
@@ -84,7 +85,7 @@ public class MicroBlogController {
         }
     }
 
-    @PutMapping(AjaxURLConfig.MicroBlog.MICROBLOG_POST)
+    @PutMapping(AjaxURLConfig.MicroBlog.MICROBLOG_CREATE)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     @LoginRequired
@@ -105,14 +106,18 @@ public class MicroBlogController {
         }
 
         List<MediaFile> imageList = new ArrayList<>();
-        for (long id : form.getPicIds()) {
-            MediaFile file = mediaService.findById(id);
 
-            if (file == null) {
-                return new AjaxResult(2, "没有该图片资源: " + id);
+        if (form.getPicIds() != null) {
+
+            for (long id : form.getPicIds()) {
+                MediaFile file = mediaService.findById(id);
+
+                if (file == null) {
+                    return new AjaxResult(2, "没有该图片资源: " + id);
+                }
+
+                imageList.add(file);
             }
-
-            imageList.add(file);
         }
 
         String content = form.getContent();

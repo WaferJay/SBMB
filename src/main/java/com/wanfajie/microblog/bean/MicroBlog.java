@@ -1,6 +1,7 @@
 package com.wanfajie.microblog.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
 import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class MicroBlog {
     private long authorId;
 
     @JsonIgnore
-    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "author_id", updatable = false, insertable = false)
     private User author;
 
@@ -30,11 +31,15 @@ public class MicroBlog {
 
     // TODO: 赞和转载
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "mb_microblog_media_file",
             joinColumns = @JoinColumn(name = "micro_blog_id"),
             inverseJoinColumns = @JoinColumn(name = "media_file_id"))
     private List<MediaFile> mediaFiles;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "microblog_id")
+    private List<Comment> comments;
 
     public MicroBlog() {
         timestamp = System.currentTimeMillis();
