@@ -7,7 +7,6 @@ import com.wanfajie.microblog.bean.form.UserUpdateInfoForm;
 import com.wanfajie.microblog.controller.ajax.result.AjaxListResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxResult;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
-import com.wanfajie.microblog.controller.validator.LoginFormValidator;
 import com.wanfajie.microblog.controller.validator.UserSignUpValidator;
 import com.wanfajie.microblog.controller.validator.UserUpdateInfoValidator;
 import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -124,15 +124,12 @@ public class UserController {
     }
 
     @RequestMapping(value = AjaxURLConfig.User.USER_LOGIN, method = RequestMethod.POST)
-    public AjaxResult login(@RequestBody UserLoginForm form, BindingResult bindingResult) {
+    public AjaxResult login(@RequestBody @Valid UserLoginForm form, BindingResult bindingResult) {
         User currentUser = userService.getCurrentUser();
 
         if (currentUser != null) {
             return new AjaxSingleResult<>(0, "已登录状态", currentUser);
         }
-
-        LoginFormValidator.getInstance()
-                .validate(form, bindingResult);
 
         if (bindingResult.hasErrors()) {
             List<Map<String, Object>> errors = ValidUtil.convertFieldErrors(bindingResult.getFieldErrors());

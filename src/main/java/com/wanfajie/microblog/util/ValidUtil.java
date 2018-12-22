@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ValidUtil {
+
+    private static final Pattern P_EMAIL = Pattern.compile("^\\w+@\\w+(?:\\.\\w+)*$");
 
     private ValidUtil() {
         throw new UnsupportedOperationException();
@@ -25,10 +28,15 @@ public class ValidUtil {
             error.put("field", field);
             error.put("code", code);
             error.put("value", value);
+            error.put("message", fieldError.getDefaultMessage());
 
             result.add(error);
         }
 
         return result;
+    }
+
+    public static boolean isEmailAddress(String email) {
+        return P_EMAIL.matcher(email).matches();
     }
 }

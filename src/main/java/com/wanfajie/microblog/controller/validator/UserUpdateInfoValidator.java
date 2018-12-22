@@ -3,6 +3,7 @@ package com.wanfajie.microblog.controller.validator;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.bean.form.UserUpdateInfoForm;
 import com.wanfajie.microblog.service.UserService;
+import com.wanfajie.microblog.util.ValidUtil;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -38,10 +39,15 @@ public class UserUpdateInfoValidator implements Validator {
         }
 
         if (email != null) {
-            User user = userService.findByEmail(email);
 
-            if (user != null && !user.equals(currentUser)) {
-                errors.rejectValue("email", "该邮箱已注册");
+            if (!ValidUtil.isEmailAddress(email)) {
+                errors.rejectValue("email", "邮箱地址无效");
+            } else {
+
+                User user = userService.findByEmail(email);
+                if (user != null && !user.equals(currentUser)) {
+                    errors.rejectValue("email", "该邮箱已注册");
+                }
             }
         }
     }

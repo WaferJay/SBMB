@@ -1,5 +1,6 @@
 package com.wanfajie.microblog.service;
 
+import com.wanfajie.microblog.bean.Comment;
 import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.bean.User;
 import org.springframework.data.domain.Page;
@@ -17,4 +18,5 @@ public interface MicroBlogService {
     Page<MicroBlog> findByUserId(long userId, Pageable pageable);
     void delete(long id);
     void delete(MicroBlog mb);
+    boolean exists(long id);
 }

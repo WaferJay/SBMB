@@ -19,11 +19,11 @@ import javax.persistence.criteria.Root;
 public class MicroBlogServiceImpl implements MicroBlogService {
 
     @Resource
-    private MicroBlogRepository repository;
+    private MicroBlogRepository mbRepository;
 
     @Override
     public void save(MicroBlog mb) {
-        repository.save(mb);
+        mbRepository.save(mb);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class MicroBlogServiceImpl implements MicroBlogService {
 
         long finalBeforeId = beforeId == 0 ? Long.MAX_VALUE : beforeId;
 
-        Page<MicroBlog> page = repository.findAll(new Specification<MicroBlog>() {
+        Page<MicroBlog> page = mbRepository.findAll(new Specification<MicroBlog>() {
             @Nullable
             @Override
             public Predicate toPredicate(Root<MicroBlog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -44,14 +44,14 @@ public class MicroBlogServiceImpl implements MicroBlogService {
 
     @Override
     public MicroBlog findById(long id) {
-        return repository.findById(id)
+        return mbRepository.findById(id)
                 .orElse(null);
     }
 
     @Override
     public Page<MicroBlog> findByUserId(long userId, Pageable pageable) {
 
-        Page<MicroBlog> page = repository.findAll(new Specification<MicroBlog>() {
+        Page<MicroBlog> page = mbRepository.findAll(new Specification<MicroBlog>() {
             @Nullable
             @Override
             public Predicate toPredicate(Root<MicroBlog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -64,11 +64,16 @@ public class MicroBlogServiceImpl implements MicroBlogService {
 
     @Override
     public void delete(long id) {
-        repository.deleteById(id);
+        mbRepository.deleteById(id);
     }
 
     @Override
     public void delete(MicroBlog mb) {
-        repository.delete(mb);
+        mbRepository.delete(mb);
+    }
+
+    @Override
+    public boolean exists(long id) {
+        return mbRepository.existsById(id);
     }
 }
