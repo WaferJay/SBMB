@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="form-group inline" th:fragment="renderFormField(id, fieldName, type, placeholder, remember)">
+    <label th:for="${id}" th:text="${fieldName}"></label>
+    <div>
+        <input th:placeholder="${placeholder}" class="form-control" th:autocomplete="${remember ? 'on' : 'off'}" th:type="${type}" required th:id="${id}" th:name="${id}">
+    </div>
+</div>
+
+<div th:fragment="signup-form">
+
+    <form method="put" id="form-signup" th:action="@{/ajax/user}">
+        <div th:replace="::renderFormField('username', '用户名', 'text', '请输入用户名', false)"></div>
+        <div th:replace="::renderFormField('email', '邮箱', 'email', '请输入邮箱地址', false)"></div>
+        <div th:replace="::renderFormField('password', '密码', 'password', '请填写密码', false)"></div>
+        <div th:replace="::renderFormField('password2', '确认密码', 'password', '请再次填写密码', false)"></div>
+
+        <div class="center" id="reg-submit-wrap">
+            <button type="submit" class="btn primary btn-big">立即注册</button>
+        </div>
+    </form>
+
+    <script>
+        require(["static/js/form", "static/js/ajax"], function (Form, ajax) {
+
+            Form.onFieldError = function (dom, value, message) {
+                al(message);
+            };
+
+            var validator = Form.handle(document.getElementById("form-signup"), function (formData) {
+                var pwd = formData.data.password,
+                    user = formData.data.username,
+                    email = formData.data.email;
+
+                ajax({
+                    url: formData.url,
+                    method: formData.method,
+                    dataType: "json",
+                    type: "json",
+                    data: {"name": user, "password": pwd, email: email},
+                    success: function (xhr, result) {
+                        var i, fieldError, messages = [], msg = result.message;
+
+                        if (result.code) {
+
+                            if (result.code) {
+
+                                if (result.items) {
+                                    for (i=0;i<result.items.length;i++) {
+                                        fieldError = result.items[i];
+                                        messages.push(fieldError.message || fieldError.code);
+                                    }
+
+                                    msg = messages.join(", ");
+                                }
+                            }
+                            al("注册失败", msg);
+                        } else {
+                            Alert.show({title: "注册成功", showOkButton: true, timer: 3000, callback: function () {
+                                window.location.href = "[[@{/login.html}]]";
+                            }});
+                        }
+                    },
+                    error: function (xhr, result) {
+                        console.log(xhr);
+                        console.log(result);
+                    }
+                });
+            });
+
+            validator.username = Form.validators.required("请填写用户名");
+
+            validator.email = [
+                Form.validators.required("请填写邮箱地址"),
+                Form.validators.email("邮箱地址不合法")
+            ];
+
+            validator.password = Form.validators.required("请填写密码");
+
+            validator.password2 = [
+                Form.validators.required("请再次填写密码"),
+                function (dom, value, formData) {
+                    if (value !== formData.data.password) {
+                        return "密码两次填写不同";
+                    }
+                }
+            ];
+        });
+    </script>
+</div>
+
+<div th:fragment="login-form">
+
+    <form th:method="post" id="form-login" th:action="@{/ajax/user/login}">
+        <div th:replace="::renderFormField('username', '用户名', 'text', '请输入用户名', true)"></div>
+        <div th:replace="::renderFormField('password', '密码', 'password', '请填写密码', false)"></div>
+
+        <div class="center" th:id="reg-submit-wrap">
+            <button type="submit" class="btn primary btn-big">登录</button>
+        </div>
+    </form>
+
+    <script>
+        require(["static/js/form", "static/js/ajax"], function (Form, ajax) {
+
+            Form.onFieldError = function (dom, value, message) {
+                al(message);
+            };
+
+            var validator = Form.handle(document.getElementById("form-login"), function (formData) {
+                var pwd = formData.data.password,
+                    user = formData.data.username;
+
+                console.log(user);
+                console.log(pwd);
+                ajax({
+                    url: formData.url,
+                    method: formData.method,
+                    dataType: "json",
+                    type: "json",
+                    data: {"username": user, "password": pwd},
+                    success: function (xhr, result) {
+                        var i, fieldError, messages = [], msg = result.message;
+
+                        if (result.code) {
+
+                            if (result.items) {
+                                for (i=0;i<result.items.length;i++) {
+                                    fieldError = result.items[i];
+                                    messages.push(fieldError.message || fieldError.code);
+                                }
+
+                                msg = messages.join(", ");
+                            }
+                            al("登录失败", msg);
+                        } else {
+                            Alert.show({title: "登录成功", showOkButton: true, timer: 3000, callback: function () {
+                                // TODO: 跳转到用户主页
+                            }});
+                        }
+                    },
+                    error: function (xhr, result) {
+                        console.log(xhr);
+                        console.log(result);
+                    }
+                })
+            });
+
+            validator.username = Form.validators.required("请填写用户名");
+            validator.password = Form.validators.required("请填写密码");
+        });
+    </script>
+</div>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" th:href="@{static/css/base.css}">
+    <link rel="stylesheet" th:href="@{static/css/main.css}">
+    <link rel="stylesheet" th:href="@{static/css/alert.css}">
+    <script th:src="@{static/js/alert.js}"></script>
+    <script th:src="@{static/js/common.js}"></script>
+    <script th:src="@{static/js/require.js}"></script>
+</head>
+<body class="bg-gradient">
+
+<div id="header-logo" class="container">
+
+</div>
+
+<div class="container plane" id="signup-plane">
+    <div class="plane-title">
+        <span class="underline" th:text="${title}"></span>
+    </div>
+
+    <div class="plane-content">
+
+        <div th:replace="forms :: ${formType}"></div>
+
+    </div>
+</div>
+</body>
+</html>
