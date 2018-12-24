@@ -1,6 +1,7 @@
 package com.wanfajie.microblog.util;
 
 import org.springframework.data.domain.Page;
+import org.springframework.ui.Model;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,5 +22,12 @@ public class PageUtil {
         List items = page.getContent();
         data.put("items", items);
         return data;
+    }
+
+    public static void copyToModel(Map<String, Object> data, Model model) {
+
+        for (Map.Entry<String, Object > entry: data.entrySet()) {
+            model.addAttribute(entry.getKey(), entry.getValue());
+        }
     }
 }

@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${title}"></title>
-    <link rel="stylesheet" th:href="@{static/css/base.css}">
-    <link rel="stylesheet" th:href="@{static/css/main.css}">
-    <link rel="stylesheet" th:href="@{static/css/alert.css}">
-    <script th:src="@{static/js/alert.js}"></script>
-    <script th:src="@{static/js/common.js}"></script>
-    <script th:src="@{static/js/require.js}"></script>
-</head>
+<head th:replace="base/base_temp_parts :: temp_header(${title}, ~{})"></head>
 <body class="bg-gradient">
 
 <div id="header-logo" class="container">

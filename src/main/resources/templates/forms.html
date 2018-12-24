@@ -136,7 +136,7 @@
                             al("登录失败", msg);
                         } else {
                             Alert.show({title: "登录成功", showOkButton: true, timer: 3000, callback: function () {
-                                // TODO: 跳转到用户主页
+                                window.location.href = "[[@{/home.html}]]";
                             }});
                         }
                     },

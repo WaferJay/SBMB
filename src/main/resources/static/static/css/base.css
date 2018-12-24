@@ -1,4 +1,9 @@
 * {margin: 0; padding: 0; color: #333}
+
+ul,
+li {
+    list-style: none;
+}
 .container {
     max-width: 1160px;
     width: 80%;
@@ -20,7 +25,7 @@ ul.list-inline {
     align-items: stretch;
 }
 
-ul.list-inline > li {
+ul.list-inline.list-stretch > li {
     flex-grow: 1;
     text-align: center;
 }
@@ -131,6 +136,11 @@ input.form-control {
     background-color: #ffbc3b;
 }
 
+.btn.primary.disable,
+.btn.primary.disable:hover {
+    background-color: #ffd267;
+}
+
 .btn.btn-big {
     font-size: 18px;
     padding: 0 2em;
@@ -142,4 +152,9 @@ input.form-control {
 .center {
     margin: 0 auto;
     text-align: center;
+}
+
+.small {
+    font-size: 12px;
+    color: #888;
 }

@@ -53,7 +53,7 @@ public class MicroBlogController {
     }
 
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_FETCH)
-    public AjaxResult getAllMicroBlog(
+    public AjaxSingleResult<Map<String, Object>> getAllMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "20") int limit,
             @RequestParam(value = "id", defaultValue = "0") long id) {

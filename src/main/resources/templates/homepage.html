@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base/base_temp_parts :: temp_header('我的首页', ~{})"></head>
+<body>
+
+<div id="main-content">
+
+    <div id="header">
+
+        <div class="container">
+            <div id="header-search">
+                <h1 id="header-title" class="nav-brand"><a href="homepage.html">微博</a></h1>
+            </div>
+            <div id="header-nav">
+                <ul class="list-inline">
+                    <li class="nav-brand">首页</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="content" class="container">
+        <div id="c_left-menu">
+            <div class="left-menu-fill"></div>
+            <div id="left-fixed-menu">
+                <ul class="menu-group">
+                    <li>首页</li>
+                    <li>我的收藏</li>
+                </ul>
+                <ul class="menu-group">
+                    <li>热门微博</li>
+                    <li>热门话题</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="c_right-content">
+            <div class="wb_main_c">
+                <div class="fragment">
+                    <div class="input">
+                        <textarea autocomplete="off" class="W_input" id="blog-editor" title="微博输入框" name="" style="height: 68px; font-size: 14px; overflow-wrap: break-word; line-height: 18px; overflow: hidden; outline: medium none;"></textarea>
+                    </div>
+                    <div class="input-control">
+                        <button type="button" class="btn primary" id="submit-blog-btn">发布</button>
+                    </div>
+                </div>
+
+                <div class="fragment" id="blog-nav">
+                    <ul class="list-inline" id="blog-nav-list">
+                        <li class="selected">全部</li>
+                        <li>原创</li>
+                        <li>图片</li>
+                        <li>视频</li>
+                    </ul>
+                    <div id="refresh-btn">
+                        <span>有新微博, 点击查看</span>
+                    </div>
+                </div>
+
+                <div class="blog-frags">
+                    <script type="text/x-simple-template" id="template-blog">
+                        <div class="fragment">
+
+                            <div class="blog-frag">
+
+                                <div class="blog-frag-header">
+                                    <h4 class="blog-frag-author">{username}</h4>
+                                    <span class="blog-frag-time small">{time}</span>
+                                </div>
+                                <div class="blog-frag-txt-content">{content}</div>
+
+                                <div class="blog-frag-media">
+                                    <div class="media-images">
+                                        <ul class="media-image-list"></ul>
+                                    </div>
+
+                                </div>
+
+                                <!-- TODO: 视频 -->
+
+                            </div>
+
+                            <div class="blog-footer">
+                                <ul class="list-inline list-divide list-stretch">
+                                    <li>收藏</li>
+                                    <li>评论</li>
+                                    <li>转载</li>
+                                    <li>赞</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </script>
+
+                    <script type="text/x-simple-template" id="template-single-image-item">
+                        <li class="single" style="background-image: url({imageUrl});"></li>
+                    </script>
+
+                    <script type="text/x-simple-template" id="template-simple-image-time">
+                        <li style="background-image: url({imageUrl});"></li>
+                    </script>
+
+                    <div th:if="${#lists.isEmpty(items)}" style="text-align: center;" class="fragment">暂时没有微博, 发一条呗</div>
+
+                    <div th:each="microblog : ${items}">
+                        <div th:replace="fragment/common :: blog(${microblog})"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="wb_main_r"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer" class="container"></div>
+
+<script>
+    document.querySelector("#submit-blog-btn").onclick = function () {
+        var editor = document.querySelector("#blog-editor"),
+            template = document.querySelector("#template-blog").innerText,
+            date = new Date(),
+            $content,
+            $blog;
+
+        $blog = template.renderDOM({
+            content: editor.value,
+            username: "User",
+            time: date.format("{Y}年{m}月{d}日 {H}:{M}")
+        }, "div");
+
+        $content = document.querySelector(".blog-frags");
+        $content.insertBefore($blog, $content.children[0]);
+    };
+</script>
+</body>
+</html>
