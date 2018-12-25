@@ -11,5 +11,24 @@
     <script th:src="@{static/js/common.js}"></script>
     <script th:src="@{static/js/require.js}"></script>
     <link th:replace="${tags}">
+
+    <script th:inline="javascript">
+        /*[+
+        window.config = {
+            API_CONF: {
+                MicroBlog: {
+                    MICROBLOG_BASE: [[@{/ajax/microblog}]],
+                    MICROBLOG_SPECIFIC: [[@{/ajax/microblog/{id}}]]
+                },
+                Image: {
+                    IMAGE_SPECIFIC_ID: [[@{/upload/images/{id}}]],
+                    IMAGE_UPLOAD: [[@{/image/upload}]]
+                }
+            }
+        };
+        window._current_user = [[${session._current_logged_in_user}]];
+        +]*/
+    </script>
+
 </head>
 </html>

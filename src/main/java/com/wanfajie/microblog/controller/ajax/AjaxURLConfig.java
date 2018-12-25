@@ -15,16 +15,15 @@ public interface AjaxURLConfig {
     }
 
     interface MicroBlog {
-        String MICROBLOG_CREATE = PREFIX_MICROBLOG;
-        String MICROBLOG = PREFIX_MICROBLOG + "/{id}";
-        String MICROBLOG_FETCH = PREFIX_MICROBLOG;
+        String MICROBLOG_BASE = PREFIX_MICROBLOG;
+        String MICROBLOG_SPECIFIC = PREFIX_MICROBLOG + "/{id}";
         String MICROBLOG_USER_FETCH = PREFIX_USER + "/{userId}/microblog";
         String MICROBLOG_SUB_FETCH = PREFIX_MICROBLOG + "/subscribed";
     }
 
     interface Comment {
-        String COMMENT_CREATE = PREFIX_COMMENT;
-        String COMMENT = PREFIX_COMMENT + "/{id}";
+        String COMMENT_BASE = PREFIX_COMMENT;
+        String COMMENT_SPECIFIC = PREFIX_COMMENT + "/{id}";
     }
 
     interface Subscribe {

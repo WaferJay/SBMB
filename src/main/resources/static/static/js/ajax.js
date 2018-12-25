@@ -82,7 +82,7 @@
         };
 
         xhr.open(method, url, true);
-        xhr.setRequestHeader("Content-Type", contentType);
+        contentType && xhr.setRequestHeader("Content-Type", contentType);
         for (headerKey in headers) {
             headerValue = headers[headerKey];
             xhr.setRequestHeader(headerKey, headerValue);

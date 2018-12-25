@@ -22,8 +22,8 @@ public class MicroBlogServiceImpl implements MicroBlogService {
     private MicroBlogRepository mbRepository;
 
     @Override
-    public void save(MicroBlog mb) {
-        mbRepository.save(mb);
+    public MicroBlog save(MicroBlog mb) {
+        return mbRepository.save(mb);
     }
 
     @Override

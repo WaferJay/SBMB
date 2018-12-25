@@ -260,6 +260,14 @@ body.bg-gradient {
 
 .input-control {
     margin: 4px 0 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.input-control > :first-child {
+    flex-grow: 1;
+    line-height: 30px;
+    font-size: 14px;
 }
 
 .media-images {

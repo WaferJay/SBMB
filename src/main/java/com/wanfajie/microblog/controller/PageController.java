@@ -37,6 +37,7 @@ public class PageController {
     }
 
     @GetMapping("/home.html")
+    @LoginRequired(redirect = true)
     public String homePage(Model model) {
         AjaxSingleResult<Map<String, Object>> result = mbController.getAllMicroBlog(1, 20, 0);
         Map<String, Object> data = result.getData();

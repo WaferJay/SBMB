@@ -18,8 +18,7 @@ public class MicroBlog {
     @Column(name = "author_id", nullable = false)
     private long authorId;
 
-    @JsonIgnore
-    @ManyToOne(optional = false, cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", updatable = false, insertable = false)
     private User author;
 

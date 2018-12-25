@@ -39,7 +39,7 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
     @Resource
     private MicroBlogCommentService commentService;
 
-    @GetMapping(AjaxURLConfig.Comment.COMMENT)
+    @GetMapping(AjaxURLConfig.Comment.COMMENT_SPECIFIC)
     public AjaxResult getComment(
             @PathVariable("mbId") long microBlogId,
             @PathVariable("id") long commentId) {
@@ -57,7 +57,7 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
         return new AjaxSingleResult<>(0, "成功", comment);
     }
 
-    @PutMapping(AjaxURLConfig.Comment.COMMENT_CREATE)
+    @PutMapping(AjaxURLConfig.Comment.COMMENT_BASE)
     @LoginRequired
     public AjaxResult postComment(
             @PathVariable("mbId") long microBlogId,
@@ -82,7 +82,7 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
         return new AjaxSingleResult<>(0, "成功", comment);
     }
 
-    @GetMapping(AjaxURLConfig.Comment.COMMENT_CREATE)
+    @GetMapping(AjaxURLConfig.Comment.COMMENT_BASE)
     public AjaxResult getComment(
             @PathVariable("mbId") long microBlogId,
             @RequestParam(value = "page", defaultValue = "1") int pageNum,
@@ -101,7 +101,7 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(comments));
     }
 
-    @DeleteMapping(AjaxURLConfig.Comment.COMMENT)
+    @DeleteMapping(AjaxURLConfig.Comment.COMMENT_SPECIFIC)
     @Transactional
     @LoginRequired
     public AjaxResult deleteComment(

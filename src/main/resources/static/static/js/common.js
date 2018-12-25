@@ -26,6 +26,34 @@ Function.prototype.method = function (name, fn, force) {
     return this;
 };
 
+Date.method("toDict", function () {
+    var result = {
+        y: this.getFullYear() - 2000,
+        Y: this.getFullYear(),
+        m: this.getMonth(),
+        d: this.getDate(),
+        H: this.getHours(),
+        M: this.getMinutes(),
+        S: this.getSeconds()
+    };
+
+    function fill(k, n) {
+        result[k+k] = result[k].fillZero(n);
+    }
+
+    fill('m', 2);
+    fill('d', 2);
+    fill('H', 2);
+    fill('M', 2);
+    fill('S', 2);
+
+    return result;
+});
+
+Date.method("format", function (fmt) {
+    return fmt.format(this.toDict());
+});
+
 String.method("endsWith", function (end) {
     var thisLen = this.length,
         subLen = end.length;
@@ -77,3 +105,103 @@ String.method("renderDOM", function (obj, wrapper) {
     return wrapper ? wrapDOM : wrapDOM.children;
 });
 
+Number.method("isInt", function () {
+    return this % 1 === 0;
+});
+
+Number.method("fillZero", function (l, n, tail) {
+    var v,
+        num,
+        i;
+
+    if (typeof l !== 'number') {
+        throw new Error(l);
+    }
+
+    v = this.toString(n || 10);
+    num = l - v.length;
+
+    for (i=0;i<num;i++) {
+
+        if (tail) {
+            v += '0';
+        } else {
+            v = '0' + v;
+        }
+    }
+
+    return v;
+});
+
+Array.method('remove', function (item) {
+    var idx = this.indexOf(item);
+
+    if (idx !== -1) {
+        this.splice(idx, 1);
+    }
+});
+
+function loadFile(options) {
+    var id = "-file-input",
+        type = options.type,
+        accept = options.accept,
+        misCb = options.onMissingType,
+        cb = options.callback,
+        notSupp = options.notSupported,
+        useFileReader = options.useFileReader,
+        dom;
+
+    dom = document.querySelector("#"+id);
+
+    if (!dom) {
+        dom = document.createElement("input");
+        dom.setAttribute("id", id);
+        dom.setAttribute("type", "file");
+        dom.style.display = "none";
+
+        document.body.appendChild(dom);
+
+        addEventListener(dom, "change", function () {
+            var file = dom.files[0],
+                matched = false,
+                reader;
+
+            if (!type) {
+                matched = true;
+            } else if (type.test) {
+                matched = type.test(file.type);
+            } else {
+                matched = file.type === type;
+            }
+
+            if (!matched) {
+                console.warn("文件类型不匹配: " + file.type, type);
+                typeof misCb === "function" && misCb(file);
+                return;
+            }
+
+            if (useFileReader) {
+
+                if (!window.FileReader) {
+                    console.warn("浏览器不支持FileReader");
+                    typeof notSupp === "function" && notSupp();
+                    return;
+                }
+
+                reader = new FileReader();
+
+                reader.onload = function (event) {
+                    cb(event.target.result);
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                cb(file);
+            }
+        });
+    }
+
+    dom.setAttribute("accept", accept);
+
+    dom.click();
+}

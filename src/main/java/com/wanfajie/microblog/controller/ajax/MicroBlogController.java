@@ -41,7 +41,7 @@ public class MicroBlogController {
     @Resource
     private MediaFileService mediaService;
 
-    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG)
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_SPECIFIC)
     public AjaxResult getMicroBlog(@PathVariable("id") long blogId) {
         MicroBlog blog = mbService.findById(blogId);
 
@@ -52,7 +52,7 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", blog);
     }
 
-    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_FETCH)
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_BASE)
     public AjaxSingleResult<Map<String, Object>> getAllMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "20") int limit,
@@ -65,7 +65,7 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(resultPage));
     }
 
-    @DeleteMapping(AjaxURLConfig.MicroBlog.MICROBLOG)
+    @DeleteMapping(AjaxURLConfig.MicroBlog.MICROBLOG_SPECIFIC)
     @Transactional
     @LoginRequired
     public AjaxResult deleteMicroBlog(@PathVariable long id) {
@@ -85,7 +85,7 @@ public class MicroBlogController {
         }
     }
 
-    @PutMapping(AjaxURLConfig.MicroBlog.MICROBLOG_CREATE)
+    @PutMapping(AjaxURLConfig.MicroBlog.MICROBLOG_BASE)
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     @LoginRequired
@@ -124,10 +124,10 @@ public class MicroBlogController {
 
         MicroBlog blog = new MicroBlog();
         blog.setContent(content);
-        blog.setAuthorId(currentUser.getId());
+        blog.setAuthor(currentUser);
         blog.setMediaFiles(imageList);
 
-        mbService.save(blog);
+        blog = mbService.save(blog);
 
         return new AjaxSingleResult<>(0, "成功", blog);
     }

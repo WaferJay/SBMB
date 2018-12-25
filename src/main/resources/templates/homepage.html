@@ -41,6 +41,10 @@
                         <textarea autocomplete="off" class="W_input" id="blog-editor" title="微博输入框" name="" style="height: 68px; font-size: 14px; overflow-wrap: break-word; line-height: 18px; overflow: hidden; outline: medium none;"></textarea>
                     </div>
                     <div class="input-control">
+                        <ul class="list-inline">
+                            <li id="upload-image-btn">图片</li>
+                            <li>话题</li>
+                        </ul>
                         <button type="button" class="btn primary" id="submit-blog-btn">发布</button>
                     </div>
                 </div>
@@ -92,11 +96,11 @@
                     </script>
 
                     <script type="text/x-simple-template" id="template-single-image-item">
-                        <li class="single" style="background-image: url({imageUrl});"></li>
+                        <li class="single" data-src="{imageUrl}" style="background-image: url({imageUrl});"></li>
                     </script>
 
-                    <script type="text/x-simple-template" id="template-simple-image-time">
-                        <li style="background-image: url({imageUrl});"></li>
+                    <script type="text/x-simple-template" id="template-simple-image-item">
+                        <li data-src="{imageUrl}" style="background-image: url({imageUrl});"></li>
                     </script>
 
                     <div th:if="${#lists.isEmpty(items)}" style="text-align: center;" class="fragment">暂时没有微博, 发一条呗</div>
@@ -118,22 +122,9 @@
 <div id="footer" class="container"></div>
 
 <script>
-    document.querySelector("#submit-blog-btn").onclick = function () {
-        var editor = document.querySelector("#blog-editor"),
-            template = document.querySelector("#template-blog").innerText,
-            date = new Date(),
-            $content,
-            $blog;
-
-        $blog = template.renderDOM({
-            content: editor.value,
-            username: "User",
-            time: date.format("{Y}年{m}月{d}日 {H}:{M}")
-        }, "div");
-
-        $content = document.querySelector(".blog-frags");
-        $content.insertBefore($blog, $content.children[0]);
-    };
+    require(["static/js/microblog"], function (MicroBlog) {
+        // TODO:
+    });
 </script>
 </body>
 </html>
