@@ -18,7 +18,6 @@
         if (deps && deps.length) {
             for (i = 0, len = deps.length; i < len; i++) {
                 (function (i) {
-                    //依赖加一
                     depCount++;
                     //这块回调很关键
                     loadMod(deps[i], function (param) {
@@ -56,7 +55,9 @@
         if (moduleCache[modName]) {
             mod = moduleCache[modName];
             if (mod.status === 'loaded') {
-                setTimeout(callback(this.params), 0);
+                setTimeout(function () {
+                    callback(mod.export);
+                }, 0);
             } else {
                 //如果未到加载状态直接往onLoad插入值，在依赖项加载好后会解除依赖
                 mod.onload.push(callback);
@@ -95,7 +96,7 @@
             mod = moduleCache[modName];
             mod.status = 'loaded';
             //输出项
-            mod.export = callback ? callback(params) : null;
+            mod.export = callback ? callback.apply(window, params) : null;
 
             //解除父类依赖，这里事实上使用事件监听较好
             while (fn = mod.onload.shift()) {
