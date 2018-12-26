@@ -16,8 +16,9 @@
             <div class="blog-frag-media">
                 <div class="media-images">
                     <ul class="media-image-list">
-                        <li th:unless="${#lists.isEmpty(microblog.mediaFiles)}"
-                            th:each="media : ${microblog.mediaFiles}"
+
+                        <li th:class="${#lists.size(microblog.mediaFiles) == 1} ? 'single' : ''"
+                            th:each="media : ${microblog?.mediaFiles}"
                             data-th-data-src="@{/upload/images/{id}(id=${media.id})}"
                             th:style="'background-image: url(' + @{/upload/images/{id}(id=${media.id})} + ');'"></li>
                     </ul>

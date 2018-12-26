@@ -117,10 +117,10 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
             return new AjaxResult(404, "该微博没有该条评论");
         }
 
-        // TODO: 微博发布者删除评论
-
         User currentUser = userService.getCurrentUser();
-        if (!comment.getUser().equals(currentUser)) {
+        if (!comment.getUser().equals(currentUser) ||
+                !comment.getMicroBlog().getAuthor().equals(currentUser)) {
+
             return new AjaxResult(403, "你没有权限删除该评论");
         }
 
