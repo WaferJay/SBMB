@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class MicroBlogController {
@@ -198,6 +196,30 @@ public class MicroBlogController {
         }
 
         return result;
+    }
+
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_LIKE)
+    @LoginRequired
+    public AjaxResult queryLikeStatus(@RequestBody Set<Long> microBlogIds) {
+        if (microBlogIds == null) {
+            return new AjaxResult(400, "缺少参数");
+        }
+
+        User currentUser = userService.getCurrentUser();
+
+        Map<Long, Boolean> result = new HashMap<>();
+        for (Long id : microBlogIds) {
+            if (id != null) {
+                MicroBlog mb = mbService.findById(id);
+
+                if (mb != null) {
+                    boolean flag = mbService.isUserLiked(currentUser, mb);
+                    result.put(id, flag);
+                }
+            }
+        }
+
+        return new AjaxSingleResult<>(0, "成功", result);
     }
 
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_SUB_FETCH)

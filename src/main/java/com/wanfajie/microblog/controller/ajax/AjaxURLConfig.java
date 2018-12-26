@@ -16,6 +16,7 @@ public interface AjaxURLConfig {
 
     interface MicroBlog {
         String MICROBLOG_BASE = PREFIX_MICROBLOG;
+        String MICROBLOG_LIKE = PREFIX_MICROBLOG + "/like";
         String MICROBLOG_SPECIFIC = PREFIX_MICROBLOG + "/{id}";
         String MICROBLOG_USER_FETCH = PREFIX_USER + "/{userId}/microblog";
         String MICROBLOG_SUB_FETCH = PREFIX_MICROBLOG + "/subscribed";

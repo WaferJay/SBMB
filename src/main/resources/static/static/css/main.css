@@ -249,7 +249,8 @@ body.bg-gradient {
     font-size: 14px;
 }
 
-.blog-footer > ul > li {
+.blog-footer > ul > li,
+.blog-footer > ul > li * {
     color: #888;
     cursor: pointer;
 }

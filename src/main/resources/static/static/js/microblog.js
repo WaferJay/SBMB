@@ -8,6 +8,7 @@
         singleImageTemplate,
         simpleImageTemplate,
         uploadImgIds = [],
+        renderProcesser = [],
         $blogList,
         $editor;
 
@@ -44,23 +45,42 @@
 
     function renderMicroBlog(microblog) {
         var $blog,
-            $imgArr,
-            imageList,
-            $each;
+            i;
 
         console.log(microblog);
 
-        // TODO: 渲染微博
         $blog = blogTemplate.renderDOM({
+            microBlogId: microblog.id,
             username: microblog.author.name,
             content: microblog.content,
+            like_count: microblog.likeCount,
             time: new Date(microblog.timestamp).format("{Y}年{m}月{d}日 {H}:{M}")
         }, "div");
+
+        for (i=0;i<renderProcesser.length;i++) {
+            try {
+                renderProcesser[i](microblog, $blog);
+            } catch (e) {
+                console.error("渲染时出错: ", e);
+            }
+        }
+
+        if ($blogList.children.length === 0) {
+            $blogList.appendChild($blog);
+        } else {
+            $blogList.insertBefore($blog, $blogList.children[0]);
+        }
+    }
+    
+    function renderImageList(microBlog, $blog) {
+        var imageList,
+            $imgArr,
+            $each;
 
         imageList = $blog.querySelector(config.blogImageListSelector);
 
         if (imageList) {
-            $imgArr = renderImageItems(microblog.mediaFiles);
+            $imgArr = renderImageItems(microBlog.mediaFiles);
 
             while ($imgArr.length !== 0) {
                 $each = $imgArr.pop();
@@ -74,12 +94,14 @@
         } else {
             console.warn("没有找到图片列表DOM");
         }
+    }
 
-        if ($blogList.children.length === 0) {
-            $blogList.appendChild($blog);
-        } else {
-            $blogList.insertBefore($blog, $blogList.children[0]);
-        }
+    function bindLikeButton(microBlog, $blog) {
+        var likeBtn = $blog.querySelector(config.likeButtonSelector);
+
+        addEventListener(likeBtn, 'click', function (event) {
+            microblogApp.handleClickLikeBtn(event);
+        });
     }
 
     function params(data) {
@@ -177,17 +199,110 @@
                     }
                 });
             },
+            
+            like: function (microBlogId, cb) {
+                ajaxFn({
+                    url: mbAPIConf.MICROBLOG_SPECIFIC.format({id: microBlogId}),
+                    method: 'post',
+                    data: {like: 1},
+                    dataType: 'json',
+                    type: 'json',
+                    success: function (xhr, data) {
+                        if (data.code === 0) {
+                            typeof cb === 'function' && cb(data.data);
+                        } else {
+                            console.log(data.message, "MicroBlogId: " + microBlogId);
+                        }
+                    },
+                    error: function (xhr, data) {
+                        if (data.code === 403 || data.status === 403) {
+                            console.log(data.message);
+                            al("登录后才能点赞哟~");
+                        }
+                    }
+                });
+            },
+
+            unlike: function (microBlogId, cb) {
+                ajaxFn({
+                    url: mbAPIConf.MICROBLOG_SPECIFIC.format({id: microBlogId}),
+                    method: 'post',
+                    data: {like: -1},
+                    dataType: 'json',
+                    type: 'json',
+                    success: function (xhr, data) {
+                        if (data.code === 0) {
+                            typeof cb === 'function' && cb(data.data);
+                        } else {
+                            console.log(data.message, "MicroBlogId: " + microBlogId);
+                        }
+                    },
+                    error: function (xhr, data) {
+                        if (data.code === 403 || data.status === 403) {
+                            console.log(data.message);
+                            al("登录后才能点赞哟~");
+                        }
+                    }
+                });
+            },
 
             renderMicroBlog: renderMicroBlog,
+
+            appendMicroBlogRender: function (render) {
+                if (typeof render !== 'function') {
+                    return false;
+                }
+
+                if (renderProcesser.indexOf(render) > -1) {
+                    return false;
+                }
+
+                renderProcesser.push(render);
+                return true;
+            },
 
             handleSubmitBlog: function () {
                 var content = $editor.value;
 
                 if (content) {
-                    // TODO: 传递图片ID
                     microblogApp.sendMicroBlog(content, uploadImgIds);
                     uploadImgIds.splice(0, uploadImgIds.length);
                 }
+            },
+
+            handleClickLikeBtn: function (event) {
+                var target = event.target,
+                    value = target.querySelector(".value"),
+                    icon,
+                    id;
+
+                id = target.dataset.id;
+                icon = target.querySelector(".icon");
+
+                if (icon.classList.contains("active")) {
+                    microblogApp.unlike(id, function () {
+                        icon.classList.remove("active");
+                        value.innerText = --target.dataset.likeCount;
+                    });
+                } else {
+                    microblogApp.like(id, function () {
+                        icon.classList.add("active");
+                        value.innerText = ++target.dataset.likeCount;
+                    });
+                }
+            },
+
+            queryLikeStatus: function (ids) {
+                ajaxFn({
+                    url: mbAPIConf.MICROBLOG_LIKE,
+                    method: 'get',
+                    data: ids,
+                    dataType: 'json',
+                    type: 'json',
+                    success: function (xhr, data) {
+                        console.log(data);
+                    }
+                });
             }
         };
     } else {
@@ -218,6 +333,9 @@
         });
     });
 
+    microblogApp.appendMicroBlogRender(renderImageList);
+    microblogApp.appendMicroBlogRender(bindLikeButton);
+
     if (window.define) {
 
         define(["static/js/ajax"], function (ajaxLib) {
@@ -239,5 +357,6 @@
     blogImageListSelector: ".media-image-list",
     imageUploadSelector: "#upload-image-btn",
     singleImageItemTemplateSelector: "#template-single-image-item",
-    simpleImageItemTemplateSelector: "#template-simple-image-item"
+    simpleImageItemTemplateSelector: "#template-simple-image-item",
+    likeButtonSelector: ".blog-control-like"
 });

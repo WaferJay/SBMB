@@ -47,7 +47,7 @@ public class MicroBlog {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "mb_micro_blog_record",
+    @JoinTable(name = "mb_micro_blog_like_record",
             joinColumns = @JoinColumn(name = "micro_blog_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> likeUsers;

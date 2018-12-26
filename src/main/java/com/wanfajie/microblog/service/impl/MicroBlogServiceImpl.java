@@ -85,15 +85,22 @@ public class MicroBlogServiceImpl implements MicroBlogService {
         return mbRepository.existsById(id);
     }
 
+    @Override
+    public boolean isUserLiked(User user, MicroBlog microBlog) {
+        MicroBlogLike likeRecord = getLikeRecord(user, microBlog);
+
+        return likeRecord != null;
+    }
+
     private MicroBlogLike getLikeRecord(User user, MicroBlog microBlog) {
-        return entityManager.find(MicroBlogLike.class, new MicroBlogLike(user.getId(), microBlog.getId()).getPrimaryKey());
+        return entityManager.find(MicroBlogLike.class, new MicroBlogLike(microBlog.getId(), user.getId()).getPrimaryKey());
     }
 
     @Override
     @Transactional
     public boolean like(User user, MicroBlog microBlog) {
 
-        if (getLikeRecord(user, microBlog) != null) {
+        if (isUserLiked(user, microBlog)) {
             return false;
         }
 
@@ -118,6 +125,7 @@ public class MicroBlogServiceImpl implements MicroBlogService {
         entityManager.remove(likeRecord);
         long count = microBlog.getLikeCount() - 1;
         microBlog.setLikeCount(count >= 0 ? count : 0);
+        entityManager.merge(microBlog);
 
         return true;
     }
