@@ -177,7 +177,9 @@
                     }
                 });
             },
-            
+
+            renderMicroBlog: renderMicroBlog,
+
             handleSubmitBlog: function () {
                 var content = $editor.value;
 
@@ -191,7 +193,9 @@
     } else {
 
         // TODO: 本地模拟
-        microblogApp = {};
+        microblogApp = {
+            renderMicroBlog: renderMicroBlog
+        };
     }
 
     $editor = document.querySelector(config.textAreaSelector);

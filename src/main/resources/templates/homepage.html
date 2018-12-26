@@ -89,7 +89,7 @@
                                     <li>收藏</li>
                                     <li>评论</li>
                                     <li>转载</li>
-                                    <li>赞</li>
+                                    <li><i class="icon like"></i>赞</li>
                                 </ul>
                             </div>
                         </div>
@@ -103,12 +103,6 @@
                         <li data-src="{imageUrl}" style="background-image: url({imageUrl});"></li>
                     </script>
 
-                    <div th:if="${#lists.isEmpty(items)}" style="text-align: center;" class="fragment">暂时没有微博, 发一条呗</div>
-
-                    <div th:each="microblog : ${items}">
-                        <div th:replace="fragment/common :: blog(${microblog})"></div>
-                    </div>
-
                 </div>
             </div>
 
@@ -121,9 +115,15 @@
 
 <div id="footer" class="container"></div>
 
-<script>
+<script th:inline="javascript">
     require(["static/js/microblog"], function (MicroBlog) {
-        // TODO:
+        var newMicroBlog = /*[[${items}]]*/ [],
+            each;
+
+        while (newMicroBlog.length > 0) {
+            each = newMicroBlog.pop();
+            MicroBlog.renderMicroBlog(each);
+        }
     });
 </script>
 </body>
