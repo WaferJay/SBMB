@@ -39,19 +39,14 @@ public class User {
         registerTimestamp = System.currentTimeMillis();
     }
 
-    public User(long id, String name, String email) {
-        this.id = id;
+    public User(String name, String email) {
+        this();
         this.name = name;
         this.email = email;
-        this.registerTimestamp = System.currentTimeMillis();
     }
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {

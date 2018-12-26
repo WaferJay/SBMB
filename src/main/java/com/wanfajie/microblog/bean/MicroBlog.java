@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "mb_microblog")
@@ -28,7 +29,10 @@ public class MicroBlog {
     @Column(name = "timestamp", nullable = false)
     private long timestamp;
 
-    // TODO: 赞和转载
+    @Column(name = "like_count", nullable = false)
+    private long likeCount;
+
+    // TODO: 转载
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "mb_microblog_media_file",
@@ -36,12 +40,21 @@ public class MicroBlog {
             inverseJoinColumns = @JoinColumn(name = "media_file_id"))
     private List<MediaFile> mediaFiles;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "microblog_id")
     private List<Comment> comments;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "mb_micro_blog_record",
+            joinColumns = @JoinColumn(name = "micro_blog_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likeUsers;
+
     public MicroBlog() {
         timestamp = System.currentTimeMillis();
+        likeCount = 0;
     }
 
     public MicroBlog(long authorId, User author, String content, List<MediaFile> mediaFiles) {
@@ -100,6 +113,18 @@ public class MicroBlog {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public long getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(long likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public Set<User> getLikeUsers() {
+        return likeUsers;
     }
 
     @Override

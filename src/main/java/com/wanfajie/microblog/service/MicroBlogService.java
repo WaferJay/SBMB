@@ -18,4 +18,6 @@ public interface MicroBlogService {
     void delete(long id);
     void delete(MicroBlog mb);
     boolean exists(long id);
+    boolean like(User user, MicroBlog microBlog);
+    boolean unLike(User user, MicroBlog microBlog);
 }
