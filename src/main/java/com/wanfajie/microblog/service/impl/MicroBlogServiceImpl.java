@@ -2,6 +2,7 @@ package com.wanfajie.microblog.service.impl;
 
 import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.bean.MicroBlogLike;
+import com.wanfajie.microblog.bean.MicroBlogLikePrimaryKey;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.repository.MicroBlogRepository;
 import com.wanfajie.microblog.service.MicroBlogService;
@@ -93,7 +94,9 @@ public class MicroBlogServiceImpl implements MicroBlogService {
     }
 
     private MicroBlogLike getLikeRecord(User user, MicroBlog microBlog) {
-        return entityManager.find(MicroBlogLike.class, new MicroBlogLike(microBlog.getId(), user.getId()).getPrimaryKey());
+        Object key = new MicroBlogLikePrimaryKey(microBlog, user);
+
+        return entityManager.find(MicroBlogLike.class, key);
     }
 
     @Override
@@ -104,7 +107,7 @@ public class MicroBlogServiceImpl implements MicroBlogService {
             return false;
         }
 
-        MicroBlogLike record = new MicroBlogLike(user.getId(), microBlog.getId());
+        MicroBlogLike record = new MicroBlogLike(microBlog, user);
 
         entityManager.persist(record);
         microBlog.setLikeCount(microBlog.getLikeCount() + 1);

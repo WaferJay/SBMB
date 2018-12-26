@@ -13,7 +13,11 @@ public class MicroBlogLikePrimaryKey implements Serializable {
     @Column(name = "user_id")
     private long userId;
 
-    MicroBlogLikePrimaryKey(long microBlogId, long userId) {
+    public MicroBlogLikePrimaryKey(MicroBlog microBlog, User user) {
+        this(microBlog.getId(), user.getId());
+    }
+
+    public MicroBlogLikePrimaryKey(long microBlogId, long userId) {
         this.microBlogId = microBlogId;
         this.userId = userId;
     }
@@ -32,5 +36,22 @@ public class MicroBlogLikePrimaryKey implements Serializable {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        MicroBlogLikePrimaryKey that = (MicroBlogLikePrimaryKey) object;
+
+        return microBlogId == that.microBlogId && userId == that.userId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (microBlogId ^ (microBlogId >>> 32));
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
+        return result;
     }
 }
