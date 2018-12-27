@@ -387,7 +387,7 @@
     if (window.define) {
 
         // XXX: 使require支持设置前缀, 以避免如下情况...
-        define(["/microblog/static/js/ajax"], function (ajaxLib) {
+        define(["lib/ajax"], function (ajaxLib) {
             ajaxFn = ajaxLib;
             return microblogApp;
         });

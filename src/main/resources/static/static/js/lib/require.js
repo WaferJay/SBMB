@@ -36,11 +36,13 @@
         }
     };
 
-    //考虑最简单逻辑即可
     function getPathUrl(modName) {
-        var url = modName;
-        //不严谨
+        var url = modName,
+            baseUrl = defaultConfig['baseUrl'];
+
+        // XXX: 构造的URI可能不规范
         if (!url.endsWith('.js')) url = url + '.js';
+        if (baseUrl) url = baseUrl + url;
         return url;
     }
 
@@ -106,6 +108,21 @@
             callback && callback.apply(window, params);
         }
     }
+
+    require.config = function (config, overwrite) {
+        var key,
+            value;
+
+        for (key in config) {
+
+            if (config.hasOwnProperty(key)) {
+
+                if (key in defaultConfig && !overwrite) continue;
+                value = config[key];
+                defaultConfig[key] = value;
+            }
+        }
+    };
 
     window.require = require;
     window.define = require;

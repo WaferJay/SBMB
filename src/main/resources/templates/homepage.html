@@ -125,7 +125,7 @@
 
 <script id="script-blog-list-view" th:inline="javascript">
     require([
-        /*[[ @{/static/js/microblog} ]]*/ "/static/js/microblog"
+        "microblog"
     ], function (MicroBlog) {
         var newMicroBlog = /*[[${items}]]*/ [],
             ids = [],
@@ -141,7 +141,7 @@
                         microBlogId = target.dataset.microblogId;
 
                     Alert.show({
-                        title: "",
+                        title: "删除?",
                         text: "确定删除这条微博吗?",
                         okButtonText: "删除",
                         cancelButtonText: "取消",
