@@ -61,14 +61,18 @@
                     </div>
                 </div>
 
-                <div class="blog-frags">
+                <div id="blog-list-view" class="blog-frags">
                     <script type="text/x-simple-template" id="template-blog">
                         <div class="fragment">
+
+                            <div class="blog-avatar-wrap">
+                                <a class="avatar" target="_blank" th:href="@{/u/{authorId}.html}" href="userpage.html?userId={authorId}"></a>
+                            </div>
 
                             <div class="blog-frag">
 
                                 <div class="blog-frag-header">
-                                    <h4 class="blog-frag-author">{username}</h4>
+                                    <h4 class="blog-frag-author"><a href="userpage.html?userId={authorId}" th:href="@{/u/{authorId}.html}">{username}</a></h4>
                                     <span class="blog-frag-time small">{time}</span>
                                 </div>
                                 <div class="blog-frag-txt-content">{content}</div>
@@ -89,7 +93,7 @@
                                     <li data-id="{microBlogId}">收藏</li>
                                     <li data-id="{microBlogId}">评论</li>
                                     <li data-id="{microBlogId}">转载</li>
-                                    <li data-id="{microBlogId}" class="blog-control-like" data-like-count="{like_count}"><i class="icon like"></i>赞 <span class="value">{like_count}</span></li>
+                                    <li data-id="{microBlogId}" class="blog-control-like" data-like-count="{like_count}"><i class="icon like"></i><span class="value">{like_count}</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -115,15 +119,21 @@
 
 <div id="footer" class="container"></div>
 
-<script th:inline="javascript">
-    require(["static/js/microblog"], function (MicroBlog) {
+<script id="script-blog-list-view" th:inline="javascript">
+    require([
+        /*[[ @{/static/js/microblog} ]]*/ "/static/js/microblog"
+    ], function (MicroBlog) {
         var newMicroBlog = /*[[${items}]]*/ [],
+            ids = [],
             each;
 
         while (newMicroBlog.length > 0) {
             each = newMicroBlog.pop();
             MicroBlog.renderMicroBlog(each);
+            ids.push(each.id);
         }
+
+        MicroBlog.queryLikeStatus(ids);
     });
 </script>
 </body>

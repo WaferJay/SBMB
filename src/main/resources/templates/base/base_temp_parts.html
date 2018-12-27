@@ -4,12 +4,12 @@
 <head th:fragment="temp_header(title, tags)">
     <meta charset="UTF-8">
     <title th:text="${title}"></title>
-    <link rel="stylesheet" th:href="@{static/css/base.css}">
-    <link rel="stylesheet" th:href="@{static/css/main.css}">
-    <link rel="stylesheet" th:href="@{static/css/alert.css}">
-    <script th:src="@{static/js/alert.js}"></script>
-    <script th:src="@{static/js/common.js}"></script>
-    <script th:src="@{static/js/require.js}"></script>
+    <link rel="stylesheet" th:href="@{/static/css/base.css}">
+    <link rel="stylesheet" th:href="@{/static/css/main.css}">
+    <link rel="stylesheet" th:href="@{/static/css/alert.css}">
+    <script th:src="@{/static/js/alert.js}"></script>
+    <script th:src="@{/static/js/common.js}"></script>
+    <script th:src="@{/static/js/require.js}"></script>
     <link th:replace="${tags}">
 
     <script th:inline="javascript">

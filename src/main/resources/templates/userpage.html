@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base/base_temp_parts :: temp_header(${user.equals(session._current_logged_in_user)} ? '我的主页' : |${user.name} 的主页|, ~{})"></head>
+<body>
+
+
+<div id="main-content">
+
+    <div id="header">
+
+        <div class="container">
+            <div id="header-search">
+                <h1 id="header-title" class="nav-brand"><a href="homepage.html">微博</a></h1>
+            </div>
+            <div id="header-nav">
+                <ul class="list-inline">
+                    <li class="nav-brand">首页</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div id="banner" style="width: 100%; height: 300px;">
+
+            <div class="user-avatar">
+                <div class="avatar big"></div>
+            </div>
+
+            <div class="user-name" th:text="${user.name}"></div>
+
+            <div class="user-control">
+                <ul class="list-inline">
+                    <li><button class="btn primary" type="button">关注</button></li>
+                    <li><button class="btn primary" type="button">test</button></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div id="content">
+
+            <div id="c_left-user_info">
+
+                <div class="fragment">
+                    <ul id="user-overview" class="list-inline list-divide list-stretch">
+                        <li>
+                            <h4>关注</h4>
+                            <span>1</span>
+                        </li>
+                        <li>
+                            <h4>粉丝</h4>
+                            <span>234</span>
+                        </li>
+                        <li>
+                            <h4>微博</h4>
+                            <span>423</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div id="c_right-content">
+                <div class="wb_main_c">
+                    <div th:replace="homepage :: #blog-list-view"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="footer" class="container"></div>
+
+<script th:replace="homepage :: #script-blog-list-view"></script>
+</body>
+</html>

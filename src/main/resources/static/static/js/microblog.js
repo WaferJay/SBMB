@@ -10,7 +10,9 @@
         uploadImgIds = [],
         renderProcesser = [],
         $blogList,
-        $editor;
+        $editor,
+        $submitBtn,
+        $uploadImageBtn;
 
     function getImageUrl(image) {
         var baseImgUrl;
@@ -52,6 +54,7 @@
         $blog = blogTemplate.renderDOM({
             microBlogId: microblog.id,
             username: microblog.author.name,
+            authorId: microblog.author.id,
             content: microblog.content,
             like_count: microblog.likeCount,
             time: new Date(microblog.timestamp).format("{Y}年{m}月{d}日 {H}:{M}")
@@ -208,8 +211,8 @@
                     dataType: 'json',
                     type: 'json',
                     success: function (xhr, data) {
-                        if (data.code === 0) {
-                            typeof cb === 'function' && cb(data.data);
+                        if (data.code === 0 || data.code === 2) {
+                            typeof cb === 'function' && cb(data.code);
                         } else {
                             console.log(data.message, "MicroBlogId: " + microBlogId);
                         }
@@ -231,8 +234,8 @@
                     dataType: 'json',
                     type: 'json',
                     success: function (xhr, data) {
-                        if (data.code === 0) {
-                            typeof cb === 'function' && cb(data.data);
+                        if (data.code === 0 || data.code === 2) {
+                            typeof cb === 'function' && cb(data.code);
                         } else {
                             console.log(data.message, "MicroBlogId: " + microBlogId);
                         }
@@ -271,7 +274,7 @@
             },
 
             handleClickLikeBtn: function (event) {
-                var target = event.target,
+                var target = event.currentTarget,
                     value = target.querySelector(".value"),
                     icon,
                     id;
@@ -280,27 +283,49 @@
                 icon = target.querySelector(".icon");
 
                 if (icon.classList.contains("active")) {
-                    microblogApp.unlike(id, function () {
+                    microblogApp.unlike(id, function (code) {
+
                         icon.classList.remove("active");
-                        value.innerText = --target.dataset.likeCount;
+                        if (code === 0) value.innerText = --target.dataset.likeCount;
                     });
                 } else {
-                    microblogApp.like(id, function () {
+                    microblogApp.like(id, function (code) {
+
                         icon.classList.add("active");
-                        value.innerText = ++target.dataset.likeCount;
+                        if (code === 0) value.innerText = ++target.dataset.likeCount;
                     });
                 }
             },
 
-            queryLikeStatus: function (ids) {
+            queryLikeStatus: function (ids, cb) {
+
+                if (ids.length === 0) {
+                    return;
+                }
+
                 ajaxFn({
                     url: mbAPIConf.MICROBLOG_LIKE,
-                    method: 'get',
+                    method: 'post',
                     data: ids,
                     dataType: 'json',
                     type: 'json',
                     success: function (xhr, data) {
-                        console.log(data);
+                        var key,
+                            dom;
+
+                        if (data.code === 0) {
+                            typeof cb === 'function' && cb(data.data);
+
+                            for (key in data.data) {
+                                dom = document.querySelector("[data-id='"+key+"'] .icon.like");
+
+                                if (data.data[key]) {
+                                    dom.classList.add("active");
+                                } else {
+                                    dom.classList.remove("active");
+                                }
+                            }
+                        }
                     }
                 });
             }
@@ -319,11 +344,13 @@
     singleImageTemplate = document.querySelector(config.singleImageItemTemplateSelector).innerText;
     simpleImageTemplate = document.querySelector(config.simpleImageItemTemplateSelector).innerText;
 
-    addEventListener(document.querySelector(config.submitSelector), 'click', function () {
+    $submitBtn = document.querySelector(config.submitSelector);
+    $submitBtn && addEventListener($submitBtn, 'click', function () {
         microblogApp.handleSubmitBlog();
     });
 
-    addEventListener(document.querySelector(config.imageUploadSelector), 'click', function () {
+    $uploadImageBtn = document.querySelector(config.imageUploadSelector);
+    $uploadImageBtn && addEventListener($uploadImageBtn, 'click', function () {
         loadFile({
             type: /^image\/(jpeg|jpg|png)$/i,
             accept: ".jpeg,.jpg,.png",
@@ -338,7 +365,8 @@
 
     if (window.define) {
 
-        define(["static/js/ajax"], function (ajaxLib) {
+        // XXX: 使require支持设置前缀, 以避免如下情况...
+        define(["/microblog/static/js/ajax"], function (ajaxLib) {
             ajaxFn = ajaxLib;
             return microblogApp;
         });

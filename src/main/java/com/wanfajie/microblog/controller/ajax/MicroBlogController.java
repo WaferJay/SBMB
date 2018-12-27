@@ -30,7 +30,7 @@ import java.util.*;
 @RestController
 public class MicroBlogController {
 
-    private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "id");
+    public static final Sort MICROBLOG_DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "id");
 
     @Resource
     private MicroBlogService mbService;
@@ -59,7 +59,7 @@ public class MicroBlogController {
             @RequestParam(value = "id", defaultValue = "0") long id) {
 
         page -= 1;
-        Pageable pageable = PageRequest.of(page, limit, DEFAULT_SORT);
+        Pageable pageable = PageRequest.of(page, limit, MICROBLOG_DEFAULT_SORT);
         Page<MicroBlog> resultPage = mbService.findAll(pageable, id);
 
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(resultPage));
@@ -140,7 +140,7 @@ public class MicroBlogController {
         pageNum -= 1;
         User user = userService.findById(userId);
 
-        Pageable pageable = PageRequest.of(pageNum, limit, DEFAULT_SORT);
+        Pageable pageable = PageRequest.of(pageNum, limit, MICROBLOG_DEFAULT_SORT);
 
         if (user == null)
             return new AjaxResult(1, "用户不存在");
@@ -198,7 +198,7 @@ public class MicroBlogController {
         return result;
     }
 
-    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_LIKE)
+    @RequestMapping(value = AjaxURLConfig.MicroBlog.MICROBLOG_LIKE, method = {RequestMethod.POST, RequestMethod.GET})
     @LoginRequired
     public AjaxResult queryLikeStatus(@RequestBody Set<Long> microBlogIds) {
         if (microBlogIds == null) {

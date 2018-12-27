@@ -1,5 +1,6 @@
 package com.wanfajie.microblog.bean;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.springframework.context.annotation.Lazy;
@@ -125,6 +126,11 @@ public class MicroBlog {
 
     public Set<User> getLikeUsers() {
         return likeUsers;
+    }
+
+    @JsonGetter
+    public int getCommentCount() {
+        return comments.size();
     }
 
     @Override

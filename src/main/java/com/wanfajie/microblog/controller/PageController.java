@@ -1,15 +1,22 @@
 package com.wanfajie.microblog.controller;
 
 import com.wanfajie.microblog.bean.MicroBlog;
+import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.controller.ajax.MicroBlogController;
 import com.wanfajie.microblog.controller.ajax.UserController;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
 import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.service.MicroBlogService;
+import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.PageUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -19,6 +26,12 @@ public class PageController {
 
     @Resource
     private MicroBlogController mbController;
+
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private MicroBlogService mbService;
 
     @GetMapping("/signup.html")
     public String signUpPage(Model model) {
@@ -44,5 +57,20 @@ public class PageController {
         PageUtil.copyToModel(data, model);
 
         return "homepage";
+    }
+
+    @GetMapping("/u/{userId}.html")
+    public String userPage(Model model, @PathVariable("userId") long userId) {
+        User user = userService.findById(userId);
+
+        if (user == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "没有这个用户");
+        }
+
+        AjaxSingleResult<Map<String, Object>> result = (AjaxSingleResult<Map<String, Object>>) mbController.getUserMicroBlog(1, 20, user.getId());
+        Map<String, Object> data = result.getData();
+        PageUtil.copyToModel(data, model);
+        model.addAttribute("user", user);
+        return "userpage";
     }
 }

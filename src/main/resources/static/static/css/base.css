@@ -170,11 +170,12 @@ input.form-control {
     background: no-repeat center center;
     -webkit-background-size: cover;
     background-size: cover;
-    margin: 0 2px;
+    margin: 0 4px;
 }
 
 .icon.like {
     background-image: url(../img/icon_simple_like.png);
+    vertical-align: top;
 }
 
 .icon.like.active {
