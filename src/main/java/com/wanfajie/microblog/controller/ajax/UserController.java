@@ -1,5 +1,6 @@
 package com.wanfajie.microblog.controller.ajax;
 
+import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.bean.form.SignUpForm;
 import com.wanfajie.microblog.bean.form.UserLoginForm;
@@ -10,6 +11,7 @@ import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
 import com.wanfajie.microblog.controller.validator.UserSignUpValidator;
 import com.wanfajie.microblog.controller.validator.UserUpdateInfoValidator;
 import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
+import com.wanfajie.microblog.service.MicroBlogService;
 import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.PasswordUtil;
 import com.wanfajie.microblog.util.ValidUtil;
@@ -37,6 +39,9 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private MicroBlogService microBlogService;
+
     @RequestMapping(AjaxURLConfig.User.USER_PING)
     public AjaxResult ping() {
         User user = userService.getCurrentUser();
@@ -63,6 +68,9 @@ public class UserController {
         String cipher = PasswordUtil.encryptPwd(user.getPassword());
         user.setPassword(cipher);
         userService.save(user);
+
+        MicroBlog firstMicroBlog = new MicroBlog(user, "你好, 世界! （这是一条系统发送的微博, 你可以删除它）", null);
+        microBlogService.save(firstMicroBlog);
 
         AjaxSingleResult<Map<String, String>> result = new AjaxSingleResult<>(0, "注册成功");
         result.setData(Collections.singletonMap("redirect", "/user_page.html"));

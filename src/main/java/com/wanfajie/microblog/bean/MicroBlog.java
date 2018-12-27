@@ -58,9 +58,9 @@ public class MicroBlog {
         likeCount = 0;
     }
 
-    public MicroBlog(long authorId, User author, String content, List<MediaFile> mediaFiles) {
+    public MicroBlog(User author, String content, List<MediaFile> mediaFiles) {
         this();
-        this.authorId = authorId;
+        this.authorId = author.getId();
         this.author = author;
         this.content = content;
         this.mediaFiles = mediaFiles;

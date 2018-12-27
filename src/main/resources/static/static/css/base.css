@@ -38,6 +38,12 @@ ul.list-inline.list-divide > li:last-child {
     border-right: none;
 }
 
+ul.list-center,
+ul.list-center > li {
+    margin: auto;
+    text-align: center;
+}
+
 .blur-bg,
 .blur-bg + .blur-bg-mask{
     position: absolute;
