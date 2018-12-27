@@ -187,3 +187,16 @@ input.form-control {
 .icon.like.active {
     background-image: url(../img/icon_liked.png);
 }
+
+.icon.close {
+    background-image: url(../img/icon_close.png);
+}
+
+.icon.close:hover {
+    background-image: url(../img/icon_close_light.png);
+}
+
+.text-small {
+    font-size: 12px;
+    color: #888;
+}

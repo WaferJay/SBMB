@@ -57,7 +57,7 @@
             authorId: microblog.author.id,
             content: microblog.content,
             like_count: microblog.likeCount,
-            time: new Date(microblog.timestamp).format("{Y}年{m}月{d}日 {H}:{M}")
+            time: new Date(microblog.timestamp).format("{Y}年{mm}月{dd}日 {HH}:{MM}")
         }, "div");
 
         for (i=0;i<renderProcesser.length;i++) {
@@ -142,6 +142,7 @@
                         if (data.code === 0) {
 
                             renderMicroBlog(data.data);
+                            $editor.value = "";
                             al("发布成功");
                         }
                     },
@@ -295,6 +296,26 @@
                         if (code === 0) value.innerText = ++target.dataset.likeCount;
                     });
                 }
+            },
+
+            removeMicroBlog: function (microBlogId, cb) {
+                ajaxFn({
+                    url: mbAPIConf.MICROBLOG_SPECIFIC.format({id: microBlogId}),
+                    method: "delete",
+                    type: 'json',
+                    success: function (xhr, data) {
+                        if (data.code === 0) {
+                            al(data.message);
+                            typeof cb === 'function' && cb();
+                        } else {
+                            al("出错了～", data.message);
+                        }
+                    },
+                    error: function (xhr, data) {
+                        console.log(data.message);
+                        al("哎呦～", "出错了~");
+                    }
+                });
             },
 
             queryLikeStatus: function (ids, cb) {

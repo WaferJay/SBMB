@@ -28,7 +28,7 @@ public class User {
     private long registerTimestamp;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "authorId", cascade = CascadeType.REMOVE)
     private List<MicroBlog> blogs;
 
     @JsonIgnore

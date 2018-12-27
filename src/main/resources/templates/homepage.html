@@ -9,7 +9,7 @@
 
         <div class="container">
             <div id="header-search">
-                <h1 id="header-title" class="nav-brand"><a href="homepage.html">微博</a></h1>
+                <h1 id="header-title" class="nav-brand"><a th:href="@{/home.html}">微博</a></h1>
             </div>
             <div id="header-nav">
                 <ul class="list-inline">
@@ -63,7 +63,11 @@
 
                 <div id="blog-list-view" class="blog-frags">
                     <script type="text/x-simple-template" id="template-blog">
-                        <div class="fragment">
+                        <div class="fragment" data-microblog-id="{microBlogId}">
+
+                            <div class="blog-opera-remove" data-microblog-id="{microBlogId}">
+                                <a href="javascript:void(0);" class="icon close opera-remove-blog"></a>
+                            </div>
 
                             <div class="blog-avatar-wrap">
                                 <a class="avatar" target="_blank" th:href="@{/u/{authorId}.html}" href="userpage.html?userId={authorId}"></a>
@@ -126,6 +130,39 @@
         var newMicroBlog = /*[[${items}]]*/ [],
             ids = [],
             each;
+        
+        MicroBlog.appendMicroBlogRender(function (microBlog, $blog) {
+
+            var rmBtn =$blog.querySelector(".blog-opera-remove");
+            if (window._current_user && window._current_user.id === microBlog.author.id && rmBtn) {
+
+                addEventListener(rmBtn, "click", function (event) {
+                    var target = event.currentTarget,
+                        microBlogId = target.dataset.microblogId;
+
+                    Alert.show({
+                        title: "",
+                        text: "确定删除这条微博吗?",
+                        okButtonText: "删除",
+                        cancelButtonText: "取消",
+                        showCancelButton: true,
+                        closeOnOk: false,
+                        callback: function (result) {
+
+                            result && MicroBlog.removeMicroBlog(microBlogId, function () {
+                                var mbFrag = document.querySelector("div.fragment[data-microblog-id='"+ microBlogId +"']");
+
+                                mbFrag && mbFrag.remove();
+                            });
+                        }
+                    });
+
+                });
+            } else {
+                rmBtn.style.display = "none";
+                rmBtn.style.visibility = "hidden";
+            }
+        });
 
         while (newMicroBlog.length > 0) {
             each = newMicroBlog.pop();
@@ -133,7 +170,7 @@
             ids.push(each.id);
         }
 
-        MicroBlog.queryLikeStatus(ids);
+        window._current_user && MicroBlog.queryLikeStatus(ids);
     });
 </script>
 </body>
