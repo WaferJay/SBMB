@@ -130,7 +130,7 @@ public class MicroBlog {
 
     @JsonGetter
     public int getCommentCount() {
-        return comments.size();
+        return comments == null ? 0 : comments.size();
     }
 
     @Override
