@@ -42,12 +42,12 @@ public class MicroBlog {
     private List<MediaFile> mediaFiles;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "microblog_id")
     private List<Comment> comments;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "mb_micro_blog_like_record",
             joinColumns = @JoinColumn(name = "micro_blog_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
