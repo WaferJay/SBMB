@@ -86,14 +86,27 @@ String.method("endsWith", function (end) {
 });
 
 String.method("format", function (obj) {
-    return this.replace(/{[\w ]+}/igm, function (matched, idx, str) {
-        var key = matched.substring(1, matched.length - 1).trim();
+    return this.replace(/{[\w .]+}/igm, function (matched, idx, str) {
+        var key = matched.substring(1, matched.length - 1).trim(),
+            outerObject = obj,
+            keyParts,
+            i;
 
-        if (key in obj) {
-            return obj[key];
-        } else {
-            return matched;
+        if (key in outerObject) {
+            return outerObject[key];
         }
+
+        keyParts = key.split(".");
+
+        for (i=0;i<keyParts.length;i++) {
+            key = keyParts[i];
+            if (outerObject && typeof outerObject === 'object' && key in outerObject) {
+                outerObject = outerObject[key];
+            } else {
+                return matched;
+            }
+        }
+        return outerObject;
     });
 });
 

@@ -25,8 +25,7 @@ public class Comment {
 
     private long timestamp;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;
 

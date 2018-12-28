@@ -49,16 +49,9 @@
         var $blog,
             i;
 
+        microblog.time = new Date(microblog.timestamp).format("{Y}年{mm}月{dd}日 {HH}:{MM}");
         console.log(microblog);
-
-        $blog = blogTemplate.renderDOM({
-            microBlogId: microblog.id,
-            username: microblog.author.name,
-            authorId: microblog.author.id,
-            content: microblog.content,
-            like_count: microblog.likeCount,
-            time: new Date(microblog.timestamp).format("{Y}年{mm}月{dd}日 {HH}:{MM}")
-        }, "div");
+        $blog = blogTemplate.renderDOM(microblog, "div");
 
         for (i=0;i<renderProcesser.length;i++) {
             try {
@@ -338,7 +331,7 @@
                             typeof cb === 'function' && cb(data.data);
 
                             for (key in data.data) {
-                                dom = document.querySelector("[data-id='"+key+"'] .icon.like");
+                                dom = document.querySelector("[data-id='"+key+"'][data-like-count] .icon.like");
 
                                 if (data.data[key]) {
                                     dom.classList.add("active");

@@ -77,7 +77,12 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
 
         User currentUser = userService.getCurrentUser();
         Comment comment = new Comment(microBlog, currentUser, form.getMessage());
-        commentService.save(comment);
+        comment = commentService.save(comment);
+
+        // XXX: 理论上save时返回的Comment会加载user成员, 但实际情况却并不是这样...
+        if (comment.getUser() == null) {
+            comment.setUser(currentUser);
+        }
 
         return new AjaxSingleResult<>(0, "成功", comment);
     }

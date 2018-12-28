@@ -106,6 +106,25 @@ ul.list-center > li {
     padding: 0 10px;
 }
 
+.input-group {
+    display: flex;
+    flex-direction: row;
+}
+
+.input-group > .input {
+    -webkit-border-radius: 4px 0 0 4px;
+    -moz-border-radius: 4px 0 0 4px;
+    border-radius: 4px 0 0 4px;
+    flex-grow: 1;
+}
+
+.input-group > .input-group-btn {
+    -webkit-border-radius: 0 4px 4px 0;
+    -moz-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+    min-width: 80px;
+}
+
 input.form-control {
     background: white;
     border: 1px solid #aaa;
@@ -199,4 +218,8 @@ input.form-control {
 .text-small {
     font-size: 12px;
     color: #888;
+}
+
+.bottom-divide {
+    border-bottom: 1px solid #ddd;
 }

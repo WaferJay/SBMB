@@ -20,6 +20,9 @@ body.bg-gradient {
 
 #header {
     background: rgba(255, 255, 255, 0.98);
+    -webkit-box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
     height: 46px;
     position: fixed;
     top: 0;
@@ -168,7 +171,7 @@ body.bg-gradient {
 .input {
     background-color: white;
     border: 1px solid #ccc;
-    padding: 4px;
+    padding: 6px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -177,7 +180,8 @@ body.bg-gradient {
     box-shadow: 0 0 3px 0 rgba(0,0,0,0.15) inset;
 }
 
-.input > textarea {
+.input > textarea,
+.input > input[type='text'] {
     border: none;
     background: transparent;
     width: 100%;
@@ -190,7 +194,8 @@ body.bg-gradient {
     overflow-wrap: break-word;
 }
 
-.input > textarea:focus {
+.input > textarea:focus,
+.input > input[type='text'] {
     border-color: #ffa00a;
 }
 
@@ -224,7 +229,7 @@ body.bg-gradient {
     font-weight:bold;
 }
 
-.blog-frag {
+.blog-frag-main {
     margin-left: 68px;
 }
 
@@ -257,6 +262,7 @@ body.bg-gradient {
 
 .blog-footer > ul {
     margin: 14px 0 0;
+    padding-bottom: 6px;
     line-height: 1.5em;
     font-size: 14px;
 }
@@ -377,7 +383,7 @@ body.bg-gradient {
 
 #c_left-user_info {
     width: 470px;
-    margin: 15px 10px 0 10px;
+    margin: 15px 0 0 10px;
 }
 
 #banner-username {
@@ -398,7 +404,7 @@ body.bg-gradient {
 }
 
 #user-overview {
-    padding: 14px 0;
+    padding: 10px 0;
 }
 
 @media screen and (max-width: 900px){
@@ -422,4 +428,45 @@ body.bg-gradient {
     float: right;
     margin: 6px;
     cursor: pointer;
+}
+
+.blog-frag {
+    padding: 0;
+}
+
+.blog-frag > * {
+    padding: 10px;
+}
+
+.blog-footer {
+    padding: 0;
+}
+
+.blog-footer-comment {
+    border-top: 1px solid #ddd;
+    background-color: #f2f2f5;
+    padding: 10px;
+}
+
+.comment-editor,
+.comment-list {
+    padding: 10px 10px 16px;
+}
+
+.comment-item {
+    padding: 10px 0;
+    position: relative;
+}
+
+.comment-item > .comment-content {
+    margin-left: 40px;
+}
+
+.comment-item > .comment-avatar > .avatar {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }

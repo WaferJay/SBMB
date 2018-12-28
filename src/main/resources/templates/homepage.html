@@ -63,9 +63,9 @@
 
                 <div id="blog-list-view" class="blog-frags">
                     <script type="text/x-simple-template" id="template-blog">
-                        <div class="fragment" data-microblog-id="{microBlogId}">
+                        <div class="fragment blog-frag" data-microblog-id="{id}">
 
-                            <div class="blog-opera-remove" data-microblog-id="{microBlogId}">
+                            <div class="blog-opera-remove" data-microblog-id="{id}">
                                 <a href="javascript:void(0);" class="icon close opera-remove-blog"></a>
                             </div>
 
@@ -73,17 +73,19 @@
                                 <a class="avatar" target="_blank" th:href="@{/u/{authorId}.html}" href="userpage.html?userId={authorId}"></a>
                             </div>
 
-                            <div class="blog-frag">
+                            <div class="blog-frag-main">
 
                                 <div class="blog-frag-header">
-                                    <h4 class="blog-frag-author"><a href="userpage.html?userId={authorId}" th:href="@{/u/{authorId}.html}">{username}</a></h4>
+                                    <h4 class="blog-frag-author"><a href="userpage.html?userId={authorId}" th:href="@{/u/{authorId}.html}">{author.name}</a></h4>
                                     <span class="blog-frag-time small">{time}</span>
                                 </div>
                                 <div class="blog-frag-txt-content">{content}</div>
 
                                 <div class="blog-frag-media">
                                     <div class="media-images">
-                                        <ul class="media-image-list"></ul>
+                                        <ul class="media-image-list">
+                                            <!-- 图片列表 #template-single-image-item|#template-simple-image-item -->
+                                        </ul>
                                     </div>
 
                                 </div>
@@ -94,11 +96,25 @@
 
                             <div class="blog-footer">
                                 <ul class="list-inline list-divide list-stretch">
-                                    <li data-id="{microBlogId}">收藏</li>
-                                    <li data-id="{microBlogId}">评论</li>
-                                    <li data-id="{microBlogId}">转载</li>
-                                    <li data-id="{microBlogId}" class="blog-control-like" data-like-count="{like_count}"><i class="icon like"></i><span class="value">{like_count}</span></li>
+                                    <li data-id="{id}">收藏</li>
+                                    <li data-id="{id}" class="blog-control-comment" data-comment-count="{commentCount}">评论 <span class="value">{commentCount}</span></li>
+                                    <li data-id="{id}">转载</li>
+                                    <li data-id="{id}" class="blog-control-like" data-like-count="{likeCount}"><i class="icon like"></i><span class="value">{likeCount}</span></li>
                                 </ul>
+
+                                <div class="blog-footer-comment" style="display: none;">
+                                    <div class="comment-editor input-group bottom-divide">
+                                        <div class="input">
+                                            <input type="text" class="WC_input" title="请输入评论" style="resize: vertical;height: 18px; font-size: 14px; overflow-wrap: break-word; line-height: 18px; overflow: hidden; outline: medium none;">
+                                        </div>
+
+                                        <button type="button" class="submit-comment-btn input-group-btn btn primary">评论</button>
+                                    </div>
+
+                                    <div class="comment-list">
+                                        <!-- 评论区 #template-comment-item -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </script>
@@ -109,6 +125,22 @@
 
                     <script type="text/x-simple-template" id="template-simple-image-item">
                         <li data-src="{imageUrl}" style="background-image: url({imageUrl});"></li>
+                    </script>
+
+                    <script type="text/x-simple-template" id="template-comment-item">
+
+                        <div class="comment-item bottom-divide" data-microblog-id="{microBlogId}" data-comment-id="{id}">
+                            <div class="comment-avatar"><a th:href="@{/u/{userId}.html}" title="{user.name}" class="avatar"></a></div>
+                            <div class="comment-content">
+                                <div class="comment-text">
+                                    <a href="userpage.html?userId={userId}" th:href="@{/u/{userId}.html}">{user.name}</a>:
+                                    <span>{message}</span>
+                                </div>
+                                <div class="comment-time">
+                                    <div class="text-small">{time}</div>
+                                </div>
+                            </div>
+                        </div>
                     </script>
 
                 </div>
@@ -125,15 +157,16 @@
 
 <script id="script-blog-list-view" th:inline="javascript">
     require([
-        "microblog"
-    ], function (MicroBlog) {
+        "microblog",
+        "comment"
+    ], function (MicroBlog, Comment) {
         var newMicroBlog = /*[[${items}]]*/ [],
             ids = [],
             each;
-        
+
         MicroBlog.appendMicroBlogRender(function (microBlog, $blog) {
 
-            var rmBtn =$blog.querySelector(".blog-opera-remove");
+            var rmBtn = $blog.querySelector(".blog-opera-remove");
             if (window._current_user && window._current_user.id === microBlog.author.id && rmBtn) {
 
                 addEventListener(rmBtn, "click", function (event) {
@@ -161,6 +194,58 @@
             } else {
                 rmBtn.style.display = "none";
                 rmBtn.style.visibility = "hidden";
+            }
+        });
+
+        function promptLogin() {
+            Alert.show({
+                title: "登录后才能评论哟～",
+                text: "是否跳转到登录页?",
+                okButtonText: "跳转",
+                cancelButtonText: "算了",
+                showCancelButton: true,
+                callback: function (result) {
+                    result && (window.location.href = /*[[ @{/login.html} ]]*/ "/login.html");
+                }
+            });
+        }
+
+        // 绑定评论发送
+        MicroBlog.appendMicroBlogRender(function (microBlog, $blog) {
+            var $commentBtn = $blog.querySelector(".submit-comment-btn"),
+                $navComment = $blog.querySelector(".blog-control-comment"),
+                $editor = $blog.querySelector(".WC_input"),
+                sendHandle;
+
+            addEventListener($navComment, "click", function () {
+                if (window._current_user) {
+                    var $comList = $blog.querySelector(".blog-footer-comment");
+                    $comList && ($comList.style.display = "block");
+                } else {
+                    promptLogin();
+                }
+            });
+
+            if ($commentBtn) {
+
+                if (window._current_user) {
+                    sendHandle = function () {
+                        var mid = microBlog.id,
+                            content;
+
+                        if ($editor && $editor.value.trim()) {
+                            content = $editor.value.trim();
+                            Comment.sendComment(mid, content, function () {
+                                var v = ++$navComment.dataset.commentCount;
+                                $navComment.querySelector(".value").innerText = v;
+                            });
+                        }
+                    };
+                } else {
+                    sendHandle = promptLogin;
+                }
+
+                addEventListener($commentBtn, 'click', sendHandle);
             }
         });
 

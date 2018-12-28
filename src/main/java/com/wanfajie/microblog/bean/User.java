@@ -1,5 +1,6 @@
 package com.wanfajie.microblog.bean;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 
@@ -111,5 +112,10 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    @JsonGetter
+    public int getBlogCount() {
+        return blogs == null ? 0 : blogs.size();
     }
 }
