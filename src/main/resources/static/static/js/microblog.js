@@ -2,7 +2,6 @@
     "use strict";
 
     var ajax,
-        drag,
         mbAPIConf,
         microblogApp,
         blogTemplate,
@@ -374,7 +373,8 @@
     blogTemplate = document.querySelector(config.blogTemplateSelector).innerText;
     singleImageTemplate = document.querySelector(config.singleImageItemTemplateSelector).innerText;
     simpleImageTemplate = document.querySelector(config.simpleImageItemTemplateSelector).innerText;
-    dragImageTemplate = document.querySelector(config.uploadedImageItemTemplateSelector).innerText;
+    dragImageTemplate = document.querySelector(config.uploadedImageItemTemplateSelector);
+    dragImageTemplate = dragImageTemplate ? dragImageTemplate.innerText : null;
     uploadedImageList = document.querySelector(config.imageDragSelector);
 
     $submitBtn = document.querySelector(config.submitSelector);
@@ -407,10 +407,13 @@
 
     define(["lib/ajax", 'lib/drag'], function (ajaxLib, dragLib) {
         ajax = ajaxLib;
-        drag = dragLib;
-        dragHandler = dragLib(config.imageDragSelector, "imgId", function (order) {
-            uploadImgIds = order;
-        });
+
+        if ($submitBtn) {
+
+            dragHandler = dragLib(config.imageDragSelector, "imgId", function (order) {
+                uploadImgIds = order;
+            });
+        }
         return microblogApp;
     });
 })({

@@ -11,7 +11,13 @@ public interface MicroBlogCommentService {
     void delete(long id);
     void delete(Comment comment);
     default Page<Comment> findByMicroBlog(MicroBlog mb, Pageable pageable) {
-        return findByMicroBlogId(mb.getId(),pageable);
+        return findByMicroBlogId(mb.getId(), pageable);
     }
-    Page<Comment> findByMicroBlogId(long id, Pageable pageable);
+    default Page<Comment> findByMicroBlog(MicroBlog mb, Pageable pageable, long beforeId) {
+        return findByMicroBlogId(mb.getId(), pageable, beforeId);
+    }
+    default Page<Comment> findByMicroBlogId(long id, Pageable pageable) {
+        return findByMicroBlogId(id, pageable, 0);
+    }
+    Page<Comment> findByMicroBlogId(long id, Pageable pageable, long beforeId);
 }

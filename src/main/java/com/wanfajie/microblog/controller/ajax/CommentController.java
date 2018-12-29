@@ -91,7 +91,8 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
     public AjaxResult getComment(
             @PathVariable("mbId") long microBlogId,
             @RequestParam(value = "page", defaultValue = "1") int pageNum,
-            @RequestParam(value = "limit", defaultValue = "10") int size) {
+            @RequestParam(value = "limit", defaultValue = "10") int size,
+            @RequestParam(value = "id", defaultValue = "0") long id) {
 
         pageNum -= 1;
 
@@ -101,7 +102,7 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
 
         Pageable pageable = PageRequest.of(pageNum, size, SORT);
 
-        Page<Comment> comments = commentService.findByMicroBlogId(microBlogId, pageable);
+        Page<Comment> comments = commentService.findByMicroBlogId(microBlogId, pageable, id);
 
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(comments));
     }

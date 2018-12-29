@@ -38,17 +38,11 @@ public class MicroBlogServiceImpl implements MicroBlogService {
     @Override
     public Page<MicroBlog> findAll(Pageable pageable, long beforeId) {
 
-        long finalBeforeId = beforeId == 0 ? Long.MAX_VALUE : beforeId;
-
-        Page<MicroBlog> page = mbRepository.findAll(new Specification<MicroBlog>() {
-            @Nullable
-            @Override
-            public Predicate toPredicate(Root<MicroBlog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.lessThan(root.get("id"), finalBeforeId);
-            }
-        }, pageable);
-
-        return page;
+        if (beforeId == 0) {
+            return mbRepository.findAll(pageable);
+        } else {
+            return mbRepository.findAll((root, query, builder) -> builder.lessThan(root.get("id"), beforeId), pageable);
+        }
     }
 
     @Override
@@ -59,16 +53,7 @@ public class MicroBlogServiceImpl implements MicroBlogService {
 
     @Override
     public Page<MicroBlog> findByUserId(long userId, Pageable pageable) {
-
-        Page<MicroBlog> page = mbRepository.findAll(new Specification<MicroBlog>() {
-            @Nullable
-            @Override
-            public Predicate toPredicate(Root<MicroBlog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.<Long>get("authorId"), userId);
-            }
-        }, pageable);
-
-        return page;
+        return mbRepository.findAll((root, query, builder) -> builder.equal(root.get("authorId"), userId), pageable);
     }
 
     @Override

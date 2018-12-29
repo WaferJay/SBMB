@@ -3,21 +3,18 @@ package com.wanfajie.microblog.service.impl;
 import com.wanfajie.microblog.bean.Comment;
 import com.wanfajie.microblog.repository.MicroBlogCommentRepository;
 import com.wanfajie.microblog.service.MicroBlogCommentService;
-import com.wanfajie.microblog.service.MicroBlogService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.Predicate;
 
 @Service
 public class MicroBlogCommentServiceImpl implements MicroBlogCommentService {
 
     @Resource
     private MicroBlogCommentRepository commentRepository;
-
-    @Resource
-    private MicroBlogService mbService;
 
     @Override
     public Comment save(Comment comment) {
@@ -40,7 +37,15 @@ public class MicroBlogCommentServiceImpl implements MicroBlogCommentService {
     }
 
     @Override
-    public Page<Comment> findByMicroBlogId(long id, Pageable pageable) {
-        return commentRepository.findAll((root, query, builder) -> builder.equal(root.<Long>get("microBlogId"), id), pageable);
+    public Page<Comment> findByMicroBlogId(long id, Pageable pageable, long beforeId) {
+        return commentRepository.findAll((root, query, builder) -> {
+            Predicate whereMbComment = builder.equal(root.get("microBlogId"), id);
+
+            return beforeId == 0 ? whereMbComment :
+                    builder.and(
+                        whereMbComment,
+                        builder.lessThan(root.get("id"), beforeId)
+                    );
+        }, pageable);
     }
 }
