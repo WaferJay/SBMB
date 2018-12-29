@@ -1,7 +1,8 @@
 (function (config) {
     "use strict";
 
-    var ajaxFn,
+    var ajax,
+        drag,
         mbAPIConf,
         microblogApp,
         blogTemplate,
@@ -9,6 +10,9 @@
         simpleImageTemplate,
         uploadImgIds = [],
         renderProcesser = [],
+        dragHandler,
+        dragImageTemplate,
+        uploadedImageList,
         $blogList,
         $editor,
         $submitBtn,
@@ -25,21 +29,15 @@
         }
     }
     
-    function renderImageItems(imageList) {
+    function renderImageItems(imageList, template) {
         var $images = [],
             imageUrl,
             i;
 
-        if (imageList.length === 1) {
-            imageUrl = getImageUrl(imageList[0]);
-            $images.push(singleImageTemplate.renderDOM({imageUrl: imageUrl})[0]);
-        } else {
+        for (i=0;i<imageList.length;i++) {
 
-            for (i=0;i<imageList.length;i++) {
-
-                imageUrl = getImageUrl(imageList[i]);
-                $images.push(simpleImageTemplate.renderDOM({imageUrl: imageUrl})[0])
-            }
+            imageUrl = getImageUrl(imageList[i]);
+            $images.push(template.renderDOM({imageUrl: imageUrl, id: imageList[i].id})[0])
         }
 
         return $images;
@@ -76,7 +74,9 @@
         imageList = $blog.querySelector(config.blogImageListSelector);
 
         if (imageList) {
-            $imgArr = renderImageItems(microBlog.mediaFiles);
+            $imgArr = renderImageItems(microBlog.mediaFiles,
+                microBlog.mediaFiles.length === 1 ?
+                    singleImageTemplate : simpleImageTemplate);
 
             while ($imgArr.length !== 0) {
                 $each = $imgArr.pop();
@@ -123,11 +123,11 @@
 
         microblogApp = {
 
-            sendMicroBlog: function (content, pids) {
-                ajaxFn({
+            sendMicroBlog: function (content) {
+                ajax({
                     url: mbAPIConf.MICROBLOG_BASE,
                     method: 'put',
-                    data: {content: content, picIds: pids || []},
+                    data: {content: content, picIds: uploadImgIds},
                     dataType: 'json',
                     type: 'json',
                     success: function (xhr, data) {
@@ -136,6 +136,7 @@
 
                             renderMicroBlog(data.data);
                             $editor.value = "";
+                            microblogApp.clearUploadedImages();
                             al("发布成功");
                         }
                     },
@@ -154,16 +155,20 @@
                     uploadUri = window['config']['API_CONF']['Image'].IMAGE_UPLOAD;
 
                 formData.append("image-file", file);
-                ajaxFn({
+                ajax({
                     url: uploadUri,
                     method: 'post',
                     data: formData,
                     type: 'json',
                     dataType: 'raw',
                     success: function (xhr, result) {
+                        var $image;
                         console.log(result);
 
                         if (result.code === 0) {
+                            $image = renderImageItems([result.data], dragImageTemplate)[0];
+                            uploadedImageList.appendChild($image);
+                            dragHandler.handleNew($image);
                             uploadImgIds.push(result.data.id);
                             al("上传成功");
                         }
@@ -173,12 +178,25 @@
             },
 
             removeImageId: function (id) {
-                uploadImgIds.remove(id);
+                var $img = uploadedImageList.querySelector("[data-img-id='"+ id +"']");
+
+                if ($img) {
+                    $img.remove();
+                    uploadImgIds.remove(id);
+                }
+            },
+
+            clearUploadedImages: function () {
+                uploadImgIds.splice(0, uploadImgIds.length);
+
+                while (uploadedImageList.children.length) {
+                    uploadedImageList.children[0].remove();
+                }
             },
 
             fetchMicroBlog: function (page, limit, id) {
 
-                ajaxFn({
+                ajax({
                     url: mbAPIConf.MICROBLOG_BASE + "?" + params({page: page,
                         limit: limit,
                         id: id || 0}),
@@ -198,7 +216,7 @@
             },
             
             like: function (microBlogId, cb) {
-                ajaxFn({
+                ajax({
                     url: mbAPIConf.MICROBLOG_SPECIFIC.format({id: microBlogId}),
                     method: 'post',
                     data: {like: 1},
@@ -221,7 +239,7 @@
             },
 
             unlike: function (microBlogId, cb) {
-                ajaxFn({
+                ajax({
                     url: mbAPIConf.MICROBLOG_SPECIFIC.format({id: microBlogId}),
                     method: 'post',
                     data: {like: -1},
@@ -262,8 +280,7 @@
                 var content = $editor.value;
 
                 if (content) {
-                    microblogApp.sendMicroBlog(content, uploadImgIds);
-                    uploadImgIds.splice(0, uploadImgIds.length);
+                    microblogApp.sendMicroBlog(content);
                 }
             },
 
@@ -292,7 +309,7 @@
             },
 
             removeMicroBlog: function (microBlogId, cb) {
-                ajaxFn({
+                ajax({
                     url: mbAPIConf.MICROBLOG_SPECIFIC.format({id: microBlogId}),
                     method: "delete",
                     type: 'json',
@@ -317,7 +334,7 @@
                     return;
                 }
 
-                ajaxFn({
+                ajax({
                     url: mbAPIConf.MICROBLOG_LIKE,
                     method: 'post',
                     data: ids,
@@ -357,10 +374,13 @@
     blogTemplate = document.querySelector(config.blogTemplateSelector).innerText;
     singleImageTemplate = document.querySelector(config.singleImageItemTemplateSelector).innerText;
     simpleImageTemplate = document.querySelector(config.simpleImageItemTemplateSelector).innerText;
+    dragImageTemplate = document.querySelector(config.uploadedImageItemTemplateSelector).innerText;
+    uploadedImageList = document.querySelector(config.imageDragSelector);
 
     $submitBtn = document.querySelector(config.submitSelector);
     $submitBtn && addEventListener($submitBtn, 'click', function () {
         microblogApp.handleSubmitBlog();
+        $submitBtn.classList.add("disable");
     });
 
     $uploadImageBtn = document.querySelector(config.imageUploadSelector);
@@ -374,23 +394,25 @@
         });
     });
 
+    $editor && $submitBtn &&
+    addEventListener($editor, "input,propertychange,change", function () {
+
+        $editor.value ?
+            $submitBtn.classList.remove("disable") :
+            $submitBtn.classList.add("disable");
+    });
+
     microblogApp.appendMicroBlogRender(renderImageList);
     microblogApp.appendMicroBlogRender(bindLikeButton);
 
-    if (window.define) {
-
-        // XXX: 使require支持设置前缀, 以避免如下情况...
-        define(["lib/ajax"], function (ajaxLib) {
-            ajaxFn = ajaxLib;
-            return microblogApp;
+    define(["lib/ajax", 'lib/drag'], function (ajaxLib, dragLib) {
+        ajax = ajaxLib;
+        drag = dragLib;
+        dragHandler = dragLib(config.imageDragSelector, "imgId", function (order) {
+            uploadImgIds = order;
         });
-    } else if ('ajax' in window) {
-
-        ajaxFn = ajax;
-        window.microblogApp = microblogApp;
-    } else {
-        console.error("缺少必要的库: AJAX");
-    }
+        return microblogApp;
+    });
 })({
     submitSelector: "#submit-blog-btn",
     textAreaSelector: "#blog-editor",
@@ -400,5 +422,7 @@
     imageUploadSelector: "#upload-image-btn",
     singleImageItemTemplateSelector: "#template-single-image-item",
     simpleImageItemTemplateSelector: "#template-simple-image-item",
-    likeButtonSelector: ".blog-control-like"
+    uploadedImageItemTemplateSelector: "#template-uploaded-image-item",
+    likeButtonSelector: ".blog-control-like",
+    imageDragSelector: "#upload-images-drag > .media-image-list"
 });

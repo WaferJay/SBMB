@@ -1,21 +1,37 @@
 
 function addEventListener(target, event, fn, useCapture) {
-    if (target.addEventListener) {
-        target.addEventListener(event, fn, useCapture);
-    } else if (target.attachEvent) {
-        target.attachEvent("on"+event, fn);
-    } else {
-        target["on"+event] = fn;
+    var parts = event.split(","),
+        each,
+        i;
+
+    for (i=0;i<parts.length;i++) {
+        each = parts[i].trim();
+
+        if (target.addEventListener) {
+            target.addEventListener(each, fn, useCapture);
+        } else if (target.attachEvent) {
+            target.attachEvent("on"+each, fn);
+        } else {
+            target["on"+each] = fn;
+        }
     }
 }
 
 function removeEventListener(target, event, fn) {
-    if (target.removeEventListener) {
-        target.removeEventListener(event, fn);
-    } else if (target.detachEvent) {
-        target.detachEvent("on"+event, fn);
-    } else {
-        target["on"+event] = null;
+    var parts = event.split(","),
+        each,
+        i;
+
+    for (i=0;i<parts.length;i++) {
+        each = parts[i].trim();
+
+        if (target.removeEventListener) {
+            target.removeEventListener(each, fn);
+        } else if (target.detachEvent) {
+            target.detachEvent("on" + each, fn);
+        } else {
+            target["on" + each] = null;
+        }
     }
 }
 

@@ -45,7 +45,15 @@
                             <li id="upload-image-btn">图片</li>
                             <li>话题</li>
                         </ul>
-                        <button type="button" class="btn primary" id="submit-blog-btn">发布</button>
+                        <button type="button" class="btn primary disable" id="submit-blog-btn">发布</button>
+                    </div>
+                    <div id="upload-images-drag" class="media-images">
+                        <script type="text/x-simple-template" id="template-uploaded-image-item">
+                            <a data-src="{imageUrl}" data-img-id="{id}" style="background-image: url({imageUrl});"></a>
+                        </script>
+                        <div class="media-image-list">
+                            <!-- 上传后的图片 #template-uploaded-image-item -->
+                        </div>
                     </div>
                 </div>
 
@@ -120,11 +128,11 @@
                     </script>
 
                     <script type="text/x-simple-template" id="template-single-image-item">
-                        <li class="single" data-src="{imageUrl}" style="background-image: url({imageUrl});"></li>
+                        <li class="single" data-src="{imageUrl}" data-img-id="{id}" style="background-image: url({imageUrl});"></li>
                     </script>
 
                     <script type="text/x-simple-template" id="template-simple-image-item">
-                        <li data-src="{imageUrl}" style="background-image: url({imageUrl});"></li>
+                        <li data-src="{imageUrl}" data-img-id="{id}" style="background-image: url({imageUrl});"></li>
                     </script>
 
                     <script type="text/x-simple-template" id="template-comment-item">
