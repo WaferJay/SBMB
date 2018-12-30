@@ -30,5 +30,7 @@ public interface AjaxURLConfig {
     interface Subscribe {
         String SUBSCRIBE_USER = PREFIX_USER + "/{id}/subscribe";
         String UNSUBSCRIBE_USER = PREFIX_USER + "/{id}/unsubscribe";
+        String SUBSCRIBE_FOLLOWING = PREFIX_USER + "/{id}/following";
+        String SUBSCRIBE_FOLLOWER = PREFIX_USER + "/{id}/follower";
     }
 }

@@ -3,10 +3,11 @@ package com.wanfajie.microblog.service.impl;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.bean.UserSubPrimaryKey;
 import com.wanfajie.microblog.bean.UserSubscribe;
-import com.wanfajie.microblog.controller.ajax.AjaxURLConfig;
 import com.wanfajie.microblog.interceptor.SessionCookieService;
 import com.wanfajie.microblog.repository.UserRepository;
 import com.wanfajie.microblog.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,5 +135,19 @@ public class UserServiceImpl implements UserService {
         manager.remove(record);
 
         return true;
+    }
+
+    @Override
+    public Page<User> findFollowing(User user, Pageable pageable) {
+        long userId = user.getId();
+
+        return repository.findFollowings(userId, pageable);
+    }
+
+    @Override
+    public Page<User> findFollower(User user, Pageable pageable) {
+        long userId = user.getId();
+
+        return repository.findFollowers(userId, pageable);
     }
 }

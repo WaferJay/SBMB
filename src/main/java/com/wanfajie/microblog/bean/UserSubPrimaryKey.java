@@ -20,4 +20,6 @@ public class UserSubPrimaryKey implements Serializable {
         this.followerId = followerId;
         this.followingId = followingId;
     }
+
+    private UserSubPrimaryKey() {}
 }

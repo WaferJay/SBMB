@@ -13,8 +13,12 @@ import com.wanfajie.microblog.controller.validator.UserUpdateInfoValidator;
 import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import com.wanfajie.microblog.service.MicroBlogService;
 import com.wanfajie.microblog.service.UserService;
+import com.wanfajie.microblog.util.PageUtil;
 import com.wanfajie.microblog.util.PasswordUtil;
 import com.wanfajie.microblog.util.ValidUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -207,5 +211,31 @@ public class UserController {
         } else {
             return new AjaxResult(1, "没有关注此用户");
         }
+    }
+
+    @GetMapping(value = AjaxURLConfig.Subscribe.SUBSCRIBE_FOLLOWER)
+    public AjaxResult getFollowers(
+            @PathVariable("id") long userId,
+            @RequestParam(value = "page", defaultValue = "1") int pageNum,
+            @RequestParam(value = "limit", defaultValue = "10") int limit) {
+
+        pageNum--;
+        User user = userService.findById(userId);
+        Page<User> page = userService.findFollower(user, pageNum, limit);
+
+        Map<String, Object> map = PageUtil.page2Map(page);
+        return new AjaxSingleResult<>(0, "成功", map);
+    }
+
+    @GetMapping(AjaxURLConfig.Subscribe.SUBSCRIBE_FOLLOWING)
+    public AjaxResult getFollowing(@PathVariable("id") long userId,
+                                   @RequestParam(value = "page", defaultValue = "1") int pageNum,
+                                   @RequestParam(value = "limit", defaultValue = "10") int limit) {
+        pageNum--;
+        User user = userService.findById(userId);
+        Page<User> page = userService.findFollowing(user, pageNum, limit);
+
+        Map<String, Object> map = PageUtil.page2Map(page);
+        return new AjaxSingleResult<>(0, "成功", map);
     }
 }

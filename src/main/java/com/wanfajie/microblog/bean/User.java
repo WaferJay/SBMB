@@ -2,14 +2,27 @@ package com.wanfajie.microblog.bean;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wanfajie.microblog.repository.MicroBlogRepository;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Entity
 @Table(name = "mb_user")
+@Component
 public class User {
+    @Transient
+    private static MicroBlogRepository mbRepository;
+
+    @Transient
+    private static EntityManager entityManager;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -131,8 +144,8 @@ public class User {
     }
 
     @JsonGetter(value = "blog_count")
-    public int getBlogCount() {
-        return blogs == null ? 0 : blogs.size();
+    public long getBlogCount() {
+        return mbRepository.count((root, query, builder) -> builder.equal(root.get("authorId"), id));
     }
 
     public List<User> getFollowers() {
@@ -144,12 +157,40 @@ public class User {
     }
 
     @JsonGetter(value = "follower_count")
-    public int getFollowerCount() {
-        return  followers == null ? 0 : followers.size();
+    public long getFollowerCount() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<UserSubscribe> root = query.from(UserSubscribe.class);
+
+        query.select(builder.count(root.get("followerId")));
+        query.where(
+                builder.equal(root.get("followingId"), id)
+        );
+        return entityManager.createQuery(query)
+                .getSingleResult();
     }
 
     @JsonGetter(value = "following_count")
-    public int getFollowingCount() {
-        return followings == null ? 0 : followings.size();
+    public long getFollowingCount() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<UserSubscribe> root = query.from(UserSubscribe.class);
+
+        query.select(builder.count(root.get("followingId")));
+        query.where(
+                builder.equal(root.get("followerId"), id)
+        );
+        return entityManager.createQuery(query)
+                .getSingleResult();
+    }
+
+    @Autowired
+    private void setMbRepository(MicroBlogRepository repository) {
+        mbRepository = repository;
+    }
+
+    @PersistenceContext
+    private void setEntityManager(EntityManager manager) {
+        entityManager = manager;
     }
 }
