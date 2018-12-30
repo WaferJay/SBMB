@@ -36,6 +36,22 @@ public class User {
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
     private List<MediaFile> files;
 
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "mb_user_subscribe",
+            joinColumns = @JoinColumn(name = "following_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id"))
+    private List<User> followers;
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "mb_user_subscribe",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id"))
+    private List<User> followings;
+
     public User() {
         registerTimestamp = System.currentTimeMillis();
     }
@@ -114,8 +130,26 @@ public class User {
         return password;
     }
 
-    @JsonGetter
+    @JsonGetter(value = "blog_count")
     public int getBlogCount() {
         return blogs == null ? 0 : blogs.size();
+    }
+
+    public List<User> getFollowers() {
+        return followers;
+    }
+
+    public List<User> getFollowings() {
+        return followings;
+    }
+
+    @JsonGetter(value = "follower_count")
+    public int getFollowerCount() {
+        return  followers == null ? 0 : followers.size();
+    }
+
+    @JsonGetter(value = "following_count")
+    public int getFollowingCount() {
+        return followings == null ? 0 : followings.size();
     }
 }

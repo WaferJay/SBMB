@@ -19,4 +19,6 @@ public interface UserService {
     void login(User user, boolean rememberMe);
     void logout();
     User getCurrentUser();
+    boolean follow(User follower, User following);
+    boolean unFollow(User follower, User following);
 }

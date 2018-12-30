@@ -172,4 +172,40 @@ public class UserController {
 
         return new AjaxResult(0, "成功");
     }
+
+    @RequestMapping(value = AjaxURLConfig.Subscribe.SUBSCRIBE_USER, method = RequestMethod.POST)
+    @Transactional
+    @LoginRequired
+    public AjaxResult subscribe(@PathVariable("id") long id) {
+        User user = userService.findById(id);
+        if (user == null) return new AjaxResult(404, "没有该用户: " + id);
+
+        User currentUser = userService.getCurrentUser();
+        if (user.equals(currentUser)) return new AjaxResult(400, "不能关注");
+        boolean res = userService.follow(currentUser, user);
+
+        if (res) {
+            return new AjaxSingleResult<>(0, "关注成功", user);
+        } else {
+            return new AjaxResult(1, "已关注此用户");
+        }
+    }
+
+    @RequestMapping(value = AjaxURLConfig.Subscribe.UNSUBSCRIBE_USER, method = RequestMethod.POST)
+    @Transactional
+    @LoginRequired
+    public AjaxResult unSubscribe(@PathVariable("id") long id) {
+        User user = userService.findById(id);
+        if (user == null) return new AjaxResult(404, "没有该用户: " + id);
+
+        User currentUser = userService.getCurrentUser();
+        if (user.equals(currentUser)) return new AjaxResult(400, "不能关注");
+        boolean res = userService.unFollow(currentUser, user);
+
+        if (res) {
+            return new AjaxSingleResult<>(0, "取消关注成功", user);
+        } else {
+            return new AjaxResult(1, "没有关注此用户");
+        }
+    }
 }

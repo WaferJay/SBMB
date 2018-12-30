@@ -1,10 +1,14 @@
 package com.wanfajie.microblog.service.impl;
 
 import com.wanfajie.microblog.bean.User;
+import com.wanfajie.microblog.bean.UserSubPrimaryKey;
+import com.wanfajie.microblog.bean.UserSubscribe;
+import com.wanfajie.microblog.controller.ajax.AjaxURLConfig;
 import com.wanfajie.microblog.interceptor.SessionCookieService;
 import com.wanfajie.microblog.repository.UserRepository;
 import com.wanfajie.microblog.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -105,5 +109,30 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() {
         return (User) interceptor.getCurrentSession()
                 .getAttribute(LOGGED_IN_SESSION_KEY);
+    }
+
+    private UserSubscribe getSubscribeRecord(User follower, User following) {
+        UserSubPrimaryKey primaryKey = new UserSubPrimaryKey(follower, following);
+        return manager.find(UserSubscribe.class, primaryKey);
+    }
+
+    @Override
+    @Transactional
+    public boolean follow(User follower, User following) {
+        if (getSubscribeRecord(follower, following) != null) return false;
+        UserSubscribe record = new UserSubscribe(follower, following);
+        manager.persist(record);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean unFollow(User follower, User following) {
+        UserSubscribe record = getSubscribeRecord(follower, following);
+        if (record == null) return false;
+        manager.remove(record);
+
+        return true;
     }
 }
