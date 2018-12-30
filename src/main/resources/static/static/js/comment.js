@@ -15,17 +15,20 @@
         al("哎呦~", "出错了...");
     }
 
+    function getCommentList(microBlogId) {
+        var $mb = document.querySelector("[data-microblog-id='"+ microBlogId + "']");
+        return $mb && $mb.querySelector(config.commentListSelector);
+    }
+
     function renderBlogComment(comment) {
         var dom,
             microBlogId = comment.microBlogId,
-            $mb,
             $list;
 
         comment.time = new Date().format("{Y}年{mm}月{dd}日 {HH}:{SS}");
-        dom = template.renderDOM(comment, "div");
+        dom = template.renderDOM(comment)[0];
 
-        $mb = document.querySelector("[data-microblog-id='"+ microBlogId + "']");
-        $list = $mb && $mb.querySelector(config.commentListSelector);
+        $list = getCommentList(microBlogId);
 
         if ($list.children.length) {
             $list.insertBefore(dom, $list.children[0]);
@@ -74,7 +77,43 @@
                     showError();
                 }
             });
-        }
+        },
+        fetchComments: function (microBlogId, page, lastId, cb) {
+            ajaxFn({
+                url: commentAPIConf.COMMENT_BASE.format({mid: microBlogId}),
+                method: 'get',
+                type: 'json',
+                params: {page: page, id: lastId || 0},
+                success: function (xhr, data) {
+                    var items;
+
+                    if (data.code === 0) {
+                        items = data.data.items;
+                        while (items.length)
+                            renderBlogComment(items.pop());
+
+                        typeof cb === 'function' && cb(data.data);
+                    }
+                },
+                error: function () {
+                    al("哎呀～", "出错了～");
+                }
+            });
+        },
+        
+        clearCommentList: function (microBlogId) {
+            var $list = getCommentList(microBlogId),
+                $items,
+                i;
+
+            $items = $list.querySelectorAll(".comment-item");
+
+            for (i=0;i<$items.length;i++) {
+                $items[i].remove();
+            }
+        },
+
+        queryCommentList: getCommentList
     };
 
     template = document.querySelector(config.templateSelector).innerText;

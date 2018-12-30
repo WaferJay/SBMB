@@ -220,9 +220,47 @@ input.form-control {
     background-image: url(../img/icon_close_light.png);
 }
 
+.icon.loading {
+    background-image: url(../img/loading.png);
+    width: 24px;
+    height: 24px;
+    animation: loadingRotate 0.8s linear 0s infinite;
+}
+
+@keyframes loadingRotate {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
 .text-small {
     font-size: 12px;
     color: #888;
+    line-height: 2em;
+}
+
+.text-cl {
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.text-cl:hover {
+    color: #ffa00a;
 }
 
 .bottom-divide {

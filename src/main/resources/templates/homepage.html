@@ -113,16 +113,22 @@
                                 <div class="blog-footer-comment" style="display: none;">
                                     <div class="comment-editor input-group bottom-divide">
                                         <div class="input">
-                                            <input type="text" class="WC_input" title="请输入评论" style="resize: vertical;height: 18px; font-size: 14px; overflow-wrap: break-word; line-height: 18px; overflow: hidden; outline: medium none;">
+                                            <input type="text" class="WC_input" placeholder="请输入评论" title="请输入评论" style="resize: vertical;height: 18px; font-size: 14px; overflow-wrap: break-word; line-height: 18px; overflow: hidden; outline: medium none;">
                                         </div>
 
-                                        <button type="button" class="submit-comment-btn input-group-btn btn primary">评论</button>
+                                        <button type="button" class="submit-comment-btn input-group-btn btn disable primary">评论</button>
                                     </div>
 
                                     <div class="comment-list">
                                         <!-- 评论区 #template-comment-item -->
+                                        <div class="hide-loading-switch" style="display: none;"></div>
+                                        <div class="loading-comment">
+                                            <i class="icon loading"></i><span>加载中...</span>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <a class="blog-more text-cl" th:href="@{/blog/{id}}" target="_blank">查看更多 &gt;</a>
                             </div>
                         </div>
                     </script>
@@ -141,7 +147,7 @@
                             <div class="comment-avatar"><a th:href="@{/u/{userId}.html}" title="{user.name}" class="avatar"></a></div>
                             <div class="comment-content">
                                 <div class="comment-text">
-                                    <a href="userpage.html?userId={userId}" th:href="@{/u/{userId}.html}">{user.name}</a>:
+                                    <a href="userpage.html?userId={userId}" target="_blank" th:href="@{/u/{userId}.html}">{user.name}</a>:
                                     <span>{message}</span>
                                 </div>
                                 <div class="comment-time">
@@ -227,8 +233,27 @@
 
             addEventListener($navComment, "click", function () {
                 if (window._current_user) {
-                    var $comList = $blog.querySelector(".blog-footer-comment");
-                    $comList && ($comList.style.display = "block");
+                    var $comList = $blog.querySelector(".blog-footer-comment"),
+                        $list = Comment.queryCommentList(microBlog.id),
+                        hideSwitch = $list.querySelector(".hide-loading-switch");
+
+                    if ($comList) {
+
+                        if ($comList.style.display === 'block') {
+                            hideSwitch.classList.remove("comment-item");
+                            $comList.style.display = "none";
+                        } else {
+                            Comment.clearCommentList(microBlog.id);
+                            $comList.style.display = "block";
+
+                            // 延时以显示加载...
+                            setTimeout(function () {
+                                Comment.fetchComments(microBlog.id, 1, 0, function (data) {
+                                    data.items.length || hideSwitch.classList.add("comment-item");
+                                });
+                            }, 500);
+                        }
+                    }
                 } else {
                     promptLogin();
                 }
@@ -246,9 +271,16 @@
                             Comment.sendComment(mid, content, function () {
                                 var v = ++$navComment.dataset.commentCount;
                                 $navComment.querySelector(".value").innerText = v;
+                                $editor.value = "";
+                                $commentBtn.classList.add("disable");
                             });
                         }
                     };
+
+                    addEventListener($editor, "input,change,propertychange", function (event) {
+                        event.currentTarget.value ? $commentBtn.classList.remove("disable") :
+                            $commentBtn.classList.add("disable");
+                    });
                 } else {
                     sendHandle = promptLogin;
                 }

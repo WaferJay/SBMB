@@ -451,7 +451,7 @@ body.bg-gradient {
 
 .comment-editor,
 .comment-list {
-    padding: 10px 10px 16px;
+    padding: 10px 10px 0;
 }
 
 .comment-item {
@@ -478,4 +478,24 @@ body.bg-gradient {
 
 #upload-images-drag > .media-image-list > * {
     cursor: all-scroll;
+}
+
+.loading-comment {
+    text-align: center;
+    font-size: 15px;
+}
+
+.loading-comment * {
+    color: #888;
+}
+
+.comment-item ~ .loading-comment {
+    display: none;
+}
+
+.blog-footer > .blog-more {
+    border-top: 1px solid #ddd;
+    width: 100%;
+    line-height: 34px;
+    background-color: #f2f2f5;
 }

@@ -73,4 +73,10 @@ public class PageController {
         model.addAttribute("user", user);
         return "userpage";
     }
+
+    @GetMapping("/blog/{id}")
+    @LoginRequired
+    public String blogDetailPage() {
+        return "";
+    }
 }
