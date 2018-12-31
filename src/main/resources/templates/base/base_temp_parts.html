@@ -67,4 +67,39 @@
     </script>
 </div>
 
+<div th:fragment="user_info(user)" class="fragment">
+    <table id="user-info-detail">
+        <tbody>
+        <tr>
+            <td class="text-small">用户:</td>
+            <td class="text-small" th:text="${user.name}"></td>
+        </tr>
+        <tr>
+            <td class="text-small">邮箱:</td>
+            <td class="text-small" th:text="${user.email}"></td>
+        </tr>
+        <tr>
+            <td class="text-small">注册时间:</td>
+            <td class="text-small" th:text="${#dates.format(user.registerTimestamp, 'yyyy年MM月dd日 HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:fragment="user_overview(user)" class="fragment">
+    <ul id="user-overview" class="list-inline list-divide list-stretch">
+        <li>
+            <h4>关注</h4>
+            <span class="text-small" th:text="${user.followingCount}">0</span>
+        </li>
+        <li>
+            <h4>粉丝</h4>
+            <span class="text-small" th:text="${user.followerCount}">0</span>
+        </li>
+        <li>
+            <h4>微博</h4>
+            <span class="text-small" th:text="${user.blogCount}">0</span>
+        </li>
+    </ul>
+</div>
 </html>

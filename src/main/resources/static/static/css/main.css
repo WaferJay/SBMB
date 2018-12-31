@@ -1,7 +1,7 @@
 * {margin:0; padding:0;}
 
 body {
-    background:  #b4daef repeat-x;
+    background: url(../img/bg_body_repeat.png)  #b4daef repeat-x top center;
 }
 
 body.bg-gradient {
@@ -14,9 +14,7 @@ body.bg-gradient {
 }
 
 #main-content {
-    background: url(../img/body_bg.jpg) no-repeat center 0;
-    -webkit-background-size: cover;
-    background-size: cover;
+    background: url(../img/body_bg.jpg) no-repeat top center;
     padding-top: 46px;
 }
 
@@ -95,7 +93,6 @@ body.bg-gradient {
 
 #content {
     background-color: rgba(0, 0, 0, 0.05);
-    min-height: 1000px;
     display: flex;
     flex-direction: row;
 }
@@ -152,7 +149,6 @@ body.bg-gradient {
 }
 
 #c_right-content .wb_main_r {
-    background: green;
     min-height:100px;
     width: 340px;
     margin-right: 10px;
@@ -411,7 +407,7 @@ body.bg-gradient {
 }
 
 #user-info-detail {
-    margin-left: 14px;
+    margin-left: 8px;
 }
 
 @media screen and (max-width: 900px){

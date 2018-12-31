@@ -163,7 +163,10 @@
                 </div>
             </div>
 
-            <div class="wb_main_r"></div>
+            <div class="wb_main_r">
+                <div th:replace="base/base_temp_parts :: user_overview(${session._current_logged_in_user})"></div>
+                <div th:replace="base/base_temp_parts :: user_info(${session._current_logged_in_user})"></div>
+            </div>
         </div>
 
     </div>
