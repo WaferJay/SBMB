@@ -234,3 +234,42 @@ function loadFile(options) {
 
     dom.click();
 }
+
+function toggleClick(dom, fn) {
+    "use strict";
+
+    var listener = toggleClick._listener = toggleClick._listener || function (event) {
+
+        var target = event.currentTarget,
+            status,
+            result;
+
+        status = (target.dataset.toggleStatus === "true");
+        typeof fn === 'function' && (result = fn(status, target, function () {
+            toggleClick._toggleFn(target);
+        }));
+
+        typeof result === "boolean" && result && toggleClick._toggleFn(target);
+    };
+
+    toggleClick._toggleFn = toggleClick._toggleFn || function (target) {
+        var status,
+            currentText,
+            toggleText,
+            toggleClass;
+
+        currentText = target.innerText;
+        toggleText = target.dataset.toggleText;
+        toggleClass = target.dataset.toggleClass;
+
+        target.classList.toggle(toggleClass);
+        target.innerText = toggleText;
+        target.dataset.toggleText = currentText;
+        status = (target.dataset.toggleStatus === "true");
+        target.dataset.toggleStatus = !status;
+    };
+
+    addEventListener(dom, "click", listener);
+
+    return listener;
+}

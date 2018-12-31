@@ -34,7 +34,16 @@
 
             <div class="user-control">
                 <ul class="list-inline list-center">
-                    <li><button class="btn primary" type="button">关注</button></li>
+                    <li th:unless="${user.equals(session._current_logged_in_user)}">
+                        <button id="subscribe-btn"
+                                data-th-data-toggle-text="${subscribed} ? '关注' : '已关注'"
+                                th:text="${subscribed} ? '已关注' : '关注'"
+                                data-th-data-user-id="${user.id}"
+                                data-toggle-class="disable"
+                                data-th-data-toggle-status="${subscribed}"
+                                th:class="'btn primary' + (${subscribed} ? ' disable' : '')"
+                                type="button">关注</button>
+                    </li>
                 </ul>
             </div>
 
@@ -48,17 +57,36 @@
                     <ul id="user-overview" class="list-inline list-divide list-stretch">
                         <li>
                             <h4>关注</h4>
-                            <span class="text-small">1</span>
+                            <span class="text-small" th:text="${user.followingCount}">0</span>
                         </li>
                         <li>
                             <h4>粉丝</h4>
-                            <span class="text-small">234</span>
+                            <span class="text-small" th:text="${user.followerCount}">0</span>
                         </li>
                         <li>
                             <h4>微博</h4>
-                            <span class="text-small">423</span>
+                            <span class="text-small" th:text="${user.blogCount}">0</span>
                         </li>
                     </ul>
+                </div>
+
+                <div class="fragment">
+                    <table id="user-info-detail">
+                        <tbody>
+                        <tr>
+                            <td class="text-small">用户:</td>
+                            <td class="text-small" th:text="${user.name}"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-small">邮箱:</td>
+                            <td class="text-small" th:text="${user.email}"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-small">注册时间:</td>
+                            <td class="text-small" th:text="${#dates.format(user.registerTimestamp, 'yyyy年MM月dd日 HH:mm:ss')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -76,6 +104,17 @@
 
 <div id="footer" class="container"></div>
 
+<script>
+    require(['subscribe'], function (subscribe) {
+        "use strict";
+        var subBtn = document.querySelector("#subscribe-btn");
+
+        subBtn && toggleClick(subBtn, function (status, btn, fn) {
+            var uid = btn.dataset.userId;
+            status ? subscribe.unsub(uid, fn) : subscribe.sub(uid, fn);
+        });
+    });
+</script>
 <script th:replace="homepage :: #script-blog-list-view"></script>
 </body>
 </html>

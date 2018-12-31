@@ -28,4 +28,9 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
             "inner join mb_user as u on u.id = us.follower_id " +
             "where us.following_id = :userId", nativeQuery = true)
     Page<User> findFollowers(@Param("userId") long userId, Pageable pageable);
+
+    // XXX: int转boolean
+    @Query(value = "select count(1)>0 from mb_user_subscribe as us " +
+            "where us.follower_id = :userId and us.following_id = :followingId", nativeQuery = true)
+    int isFollowing(@Param("userId") long userId, @Param("followingId") long followingId);
 }

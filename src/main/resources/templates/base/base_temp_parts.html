@@ -27,6 +27,12 @@
                 Image: {
                     IMAGE_SPECIFIC_ID: [[@{/upload/images/{id}}]],
                     IMAGE_UPLOAD: [[@{/image/upload}]]
+                },
+                Subscribe: {
+                    SUBSCRIBE: [[@{/ajax/user/{uid}/subscribe}]],
+                    UNSUBSCRIBE: [[@{/ajax/user/{uid}/unsubscribe}]],
+                    FOLLOWER: [[@{/ajax/user/{uid}/follower}]],
+                    FOLLOWING: [[@{/ajax/user/{uid}/following}]]
                 }
             }
         };

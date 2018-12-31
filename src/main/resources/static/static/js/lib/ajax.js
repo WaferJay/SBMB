@@ -33,10 +33,10 @@
         }
 
         if (dataType in dataConverter) {
-            bodyData = dataConverter[dataType].encode(data);
+            data && (bodyData = dataConverter[dataType].encode(data));
             contentType = dataConverter[dataType].mediaType;
         } else {
-            bodyData = dataConverter.form.encode(data);
+            data && (bodyData = dataConverter.form.encode(data));
             contentType = dataConverter.form.mediaType;
         }
 

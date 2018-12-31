@@ -150,4 +150,9 @@ public class UserServiceImpl implements UserService {
 
         return repository.findFollowers(userId, pageable);
     }
+
+    @Override
+    public boolean isFollowing(User user, User following) {
+        return repository.isFollowing(user.getId(), following.getId()) > 0;
+    }
 }

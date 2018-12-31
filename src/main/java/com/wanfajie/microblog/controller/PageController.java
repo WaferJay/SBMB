@@ -1,9 +1,7 @@
 package com.wanfajie.microblog.controller;
 
-import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.controller.ajax.MicroBlogController;
-import com.wanfajie.microblog.controller.ajax.UserController;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
 import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import com.wanfajie.microblog.service.MicroBlogService;
@@ -14,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -62,6 +58,7 @@ public class PageController {
     @GetMapping("/u/{userId}.html")
     public String userPage(Model model, @PathVariable("userId") long userId) {
         User user = userService.findById(userId);
+        User currentUser = userService.getCurrentUser();
 
         if (user == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "没有这个用户");
@@ -71,6 +68,8 @@ public class PageController {
         Map<String, Object> data = result.getData();
         PageUtil.copyToModel(data, model);
         model.addAttribute("user", user);
+        model.addAttribute("subscribed", currentUser != null &&
+                userService.isFollowing(currentUser, user));
         return "userpage";
     }
 

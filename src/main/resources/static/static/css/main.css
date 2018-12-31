@@ -408,6 +408,10 @@ body.bg-gradient {
     padding: 10px 0;
 }
 
+#user-info-detail {
+    margin-left: 14px;
+}
+
 @media screen and (max-width: 900px){
 
     #c_left-user_info,

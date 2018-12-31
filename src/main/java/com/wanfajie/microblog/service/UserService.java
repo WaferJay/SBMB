@@ -35,4 +35,5 @@ public interface UserService {
     default Page<User> findFollower(User user, int page, int limit) {
         return findFollower(user, PageRequest.of(page, limit, SORT_DEFAULT));
     }
+    boolean isFollowing(User user, User following);
 }

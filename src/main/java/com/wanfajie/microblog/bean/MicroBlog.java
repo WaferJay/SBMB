@@ -2,8 +2,6 @@ package com.wanfajie.microblog.bean;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Fetch;
-import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.util.List;

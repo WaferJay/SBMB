@@ -185,7 +185,7 @@ public class UserController {
         if (user == null) return new AjaxResult(404, "没有该用户: " + id);
 
         User currentUser = userService.getCurrentUser();
-        if (user.equals(currentUser)) return new AjaxResult(400, "不能关注");
+        if (user.equals(currentUser)) return new AjaxResult(400, "不能关注自己");
         boolean res = userService.follow(currentUser, user);
 
         if (res) {
@@ -203,7 +203,7 @@ public class UserController {
         if (user == null) return new AjaxResult(404, "没有该用户: " + id);
 
         User currentUser = userService.getCurrentUser();
-        if (user.equals(currentUser)) return new AjaxResult(400, "不能关注");
+        if (user.equals(currentUser)) return new AjaxResult(400, "不能关注自己");
         boolean res = userService.unFollow(currentUser, user);
 
         if (res) {
