@@ -15,6 +15,7 @@
         $blogList,
         $editor,
         $submitBtn,
+        $lastBlog,
         $uploadImageBtn;
 
     function getImageUrl(image) {
@@ -42,7 +43,7 @@
         return $images;
     }
 
-    function renderMicroBlog(microblog) {
+    function renderMicroBlog(microblog, tail) {
         var $blog,
             i;
 
@@ -58,10 +59,20 @@
             }
         }
 
-        if ($blogList.children.length === 0) {
-            $blogList.appendChild($blog);
+        if (tail) {
+            insertAfter($blog, $lastBlog);
+            $lastBlog = $blog;
         } else {
-            $blogList.insertBefore($blog, $blogList.children[0]);
+
+            if ($blogList.children.length === 0) {
+                $blogList.appendChild($blog);
+            } else {
+                $blogList.insertBefore($blog, $blogList.children[0]);
+            }
+
+            if (!$lastBlog) {
+                $lastBlog = $blog;
+            }
         }
     }
     
@@ -193,13 +204,24 @@
                 }
             },
 
-            fetchMicroBlog: function (page, limit, id) {
+            fetchMicroBlog: function (options) {
+                var urlParams,
+                    tail = options.tail,
+                    cb = options.callback,
+                    url = mbAPIConf.MICROBLOG_BASE;
+
+                urlParams = {
+                    page: options.page || 1,
+                    limit: options.limit || 10,
+                    id: options.id || 0
+                };
+
+                if (options.userId) {
+                    url = mbAPIConf.MICROBLOG_USER.format({uid: options.userId});
+                }
 
                 ajax({
-                    url: mbAPIConf.MICROBLOG_BASE + "?" + params({page: page,
-                        limit: limit,
-                        id: id || 0}),
-
+                    url: url + "?" + params(urlParams),
                     method: 'get',
                     type: 'json',
                     success: function (xhr, data) {
@@ -208,8 +230,10 @@
 
                         for (i=0;i<items.length;i++) {
 
-                            renderMicroBlog(items[i]);
+                            renderMicroBlog(items[i], tail);
                         }
+
+                        typeof cb === 'function' && cb(data.data);
                     }
                 });
             },

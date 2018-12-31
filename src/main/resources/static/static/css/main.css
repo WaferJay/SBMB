@@ -528,6 +528,26 @@ body.bg-gradient {
     height: 120px;
 }
 
-.blog-frag ~ .no-blog {
+.blog-frag ~ .no-blog,
+.loading-blog.show ~ .no-blog {
     display: none;
+}
+
+.loading-blog {
+    text-align: center;
+    visibility: hidden;
+    padding: 0;
+    height: 0;
+}
+
+.loading-blog.show {
+    visibility: visible;
+    font-size: 14px;
+    padding: 12px 0;
+    height: auto;
+}
+
+.loading-blog .icon {
+    width: 30px;
+    height: 30px;
 }

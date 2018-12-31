@@ -55,7 +55,7 @@ public class MicroBlogController {
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_BASE)
     public AjaxSingleResult<Map<String, Object>> getAllMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "20") int limit,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
             @RequestParam(value = "id", defaultValue = "0") long id) {
 
         page -= 1;
@@ -135,7 +135,7 @@ public class MicroBlogController {
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_USER_FETCH)
     public AjaxResult getUserMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int pageNum,
-            @RequestParam(value = "limit", defaultValue = "20") int limit,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
             @PathVariable("userId") long userId) {
         pageNum -= 1;
         User user = userService.findById(userId);

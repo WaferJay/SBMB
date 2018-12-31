@@ -1,7 +1,7 @@
 (function (config) {
     "use strict";
 
-    var domList = [],
+    var handleList = [],
         scrollApp;
 
     function scrollTop() {
@@ -27,16 +27,18 @@
             height = clientHeight(),
             pos = top + height,
             enterList = [],
+            item,
             dom,
             domTop,
             i;
 
-        for (i=0;i<domList.length;i++) {
-            dom = domList[i];
-            domTop = dom.element.offsetTop;
+        for (i=0;i<handleList.length;i++) {
+            item = handleList[i];
+            dom = item.element;
+            domTop = dom.offsetTop;
 
-            if (pos > domTop)
-                enterList.push(dom);
+            if (pos >= domTop && domTop + dom.offsetHeight >= top)
+                enterList.push(item);
         }
 
         return {
@@ -93,6 +95,7 @@
             element,
             callback,
             isCallOnce,
+            exitCb,
             i;
 
         for (i=0;i<enters.length;i++) {
@@ -112,18 +115,24 @@
             enters[i].called = true;
         }
 
-        for (i=0;i<domList.length;i++) {
-            if (result.enters.indexOf(domList[i]) === -1) {
-                domList[i].called = false;
+        for (i=0;i<handleList.length;i++) {
+            if (result.enters.indexOf(handleList[i]) === -1) {
+
+                if (handleList[i].called) {
+                    exitCb = handleList[i].exitCallback;
+                    typeof exitCb === 'function' && exitCb(handleList[i].element, result.top, result.height);
+                    handleList[i].called = false;
+                }
             }
         }
     });
 
     scrollApp = {
-        handleScroll: function (dom, cb, once) {
-            domList.push({
+        handleScroll: function (dom, enterCallback, exitCallback, once) {
+            handleList.push({
                 element: dom,
-                callback: cb,
+                callback: enterCallback,
+                exitCallback: exitCallback,
                 callOnce: once || false
             });
         },
@@ -136,8 +145,6 @@
 
         top: scrollTop
     };
-
-    window.ScrollApp = scrollApp;
 
     define([], function () {
         return scrollApp;

@@ -286,3 +286,16 @@ var animationsFunction = {
         return (b-c)/2 * ((--t)*(t-2) - 1) + b;
     }
 };
+
+function insertAfter(newElement, targetElement) {
+    var parent = targetElement.parentNode,
+        last = parent.lastElementChild || parent.lastChild,
+        next;
+
+    if (last === targetElement) {
+        parent.appendChild(newElement);
+    } else {
+        next = targetElement.nextElementSibling || targetElement.nextSibling;
+        parent.insertBefore(newElement, next);
+    }
+}

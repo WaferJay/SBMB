@@ -49,7 +49,7 @@ public class PageController {
     @GetMapping("/home.html")
     @LoginRequired(redirect = true)
     public String homePage(Model model) {
-        AjaxSingleResult<Map<String, Object>> result = mbController.getAllMicroBlog(1, 20, 0);
+        AjaxSingleResult<Map<String, Object>> result = mbController.getAllMicroBlog(1, 10, 0);
         Map<String, Object> data = result.getData();
         PageUtil.copyToModel(data, model);
 
@@ -65,7 +65,7 @@ public class PageController {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "没有这个用户");
         }
 
-        AjaxSingleResult<Map<String, Object>> result = (AjaxSingleResult<Map<String, Object>>) mbController.getUserMicroBlog(1, 20, user.getId());
+        AjaxSingleResult<Map<String, Object>> result = (AjaxSingleResult<Map<String, Object>>) mbController.getUserMicroBlog(1, 10, user.getId());
         Map<String, Object> data = result.getData();
         PageUtil.copyToModel(data, model);
         model.addAttribute("user", user);

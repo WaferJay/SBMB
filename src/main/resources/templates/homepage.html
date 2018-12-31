@@ -157,6 +157,13 @@
                         </div>
                     </script>
 
+                    <div class="loading-blog fragment">
+                        <div class="text-cl">
+                            <i class="icon loading"></i>
+                            Loading...
+                        </div>
+                    </div>
+
                     <div class="fragment no-blog">
                         暂时没有微博
                     </div>
@@ -309,6 +316,41 @@
 
         window._current_user && MicroBlog.queryLikeStatus(ids);
     });
+
+    require(["lib/scroll", "microblog"], function (scroll, microBlog) {
+        var loading = document.querySelector(".loading-blog"),
+            beforeId = document.querySelector(".blog-frag").dataset.microblogId,
+            currentPage = /*[[${current_page}]]*/ 1,
+            userId = /*[[${user} ? ${user.id} : null]]*/ null,
+            stop = false;
+
+        function hide(data) {
+            loading.classList.remove("show");
+            if (currentPage >= data.total_pages) {
+                stop = true;
+            }
+        }
+
+        function handleEnter(dom) {
+            if (dom.classList.contains("show")) return;
+            if (stop) return;
+
+            dom.classList.add("show");
+            setTimeout(function () {
+
+                microBlog.fetchMicroBlog({
+                    page: ++currentPage,
+                    id: beforeId,
+                    callback: hide,
+                    userId: userId,
+                    tail: true
+                });
+            }, 1000);
+        }
+
+        scroll.handleScroll(loading, handleEnter, null, true);
+    });
 </script>
+
 </body>
 </html>
