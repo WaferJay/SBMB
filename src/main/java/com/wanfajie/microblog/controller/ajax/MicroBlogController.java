@@ -223,8 +223,17 @@ public class MicroBlogController {
     }
 
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_SUB_FETCH)
-    public AjaxResult getSubMicroBlog() {
-        // TODO:
-        return null;
+    @LoginRequired
+    public AjaxResult getSubMicroBlog(
+            @RequestParam(value = "page", defaultValue = "1") int pageNum,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            @RequestParam(value = "mid", defaultValue = "0") long beforeMicroblogId) {
+        pageNum--;
+
+        User currentUser = userService.getCurrentUser();
+        Page<MicroBlog> page = mbService.findSubscribeMicroBlog(currentUser, beforeMicroblogId,
+                PageRequest.of(pageNum, limit, MICROBLOG_DEFAULT_SORT));
+
+        return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(page));
     }
 }

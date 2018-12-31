@@ -21,4 +21,8 @@ public interface MicroBlogService {
     boolean isUserLiked(User user, MicroBlog microBlog);
     boolean like(User user, MicroBlog microBlog);
     boolean unLike(User user, MicroBlog microBlog);
+    default Page<MicroBlog> findSubscribeMicroBlog(User user, Pageable pageable) {
+        return findSubscribeMicroBlog(user, 0, pageable);
+    }
+    Page<MicroBlog> findSubscribeMicroBlog(User user, long beforeMId, Pageable pageable);
 }

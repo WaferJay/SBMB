@@ -8,18 +8,12 @@ import com.wanfajie.microblog.repository.MicroBlogRepository;
 import com.wanfajie.microblog.service.MicroBlogService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 @Service
 public class MicroBlogServiceImpl implements MicroBlogService {
@@ -41,7 +35,7 @@ public class MicroBlogServiceImpl implements MicroBlogService {
         if (beforeId == 0) {
             return mbRepository.findAll(pageable);
         } else {
-            return mbRepository.findAll((root, query, builder) -> builder.lessThan(root.get("id"), beforeId), pageable);
+            return mbRepository.findAll((root, query, builder) -> builder.lessThanOrEqualTo(root.get("id"), beforeId), pageable);
         }
     }
 
@@ -116,5 +110,11 @@ public class MicroBlogServiceImpl implements MicroBlogService {
         entityManager.merge(microBlog);
 
         return true;
+    }
+
+    @Override
+    public Page<MicroBlog> findSubscribeMicroBlog(User user, long beforeId, Pageable pageable) {
+        return beforeId == 0 ? mbRepository.findSubscribeMicroBlog(user.getId(), pageable)
+                : mbRepository.findSubscribeMicroBlog(user.getId(), beforeId, pageable);
     }
 }
