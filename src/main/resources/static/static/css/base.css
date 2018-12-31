@@ -204,24 +204,24 @@ input.form-control {
 }
 
 .icon.like {
-    background-image: url(../img/icon_simple_like.png);
+    background-image: url(../img/icon/icon_simple_like.png);
     vertical-align: top;
 }
 
 .icon.like.active {
-    background-image: url(../img/icon_liked.png);
+    background-image: url(../img/icon/icon_liked.png);
 }
 
 .icon.close {
-    background-image: url(../img/icon_close.png);
+    background-image: url(../img/icon/icon_close.png);
 }
 
 .icon.close:hover {
-    background-image: url(../img/icon_close_light.png);
+    background-image: url(../img/icon/icon_close_light.png);
 }
 
 .icon.loading {
-    background-image: url(../img/loading.png);
+    background-image: url(../img/icon/icon_loading.png);
     width: 24px;
     height: 24px;
     animation: loadingRotate 0.8s linear 0s infinite;
@@ -243,6 +243,10 @@ input.form-control {
         -o-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+}
+
+.icon.top {
+    background-image: url(../img/icon/icon_top.png);
 }
 
 .text-small {

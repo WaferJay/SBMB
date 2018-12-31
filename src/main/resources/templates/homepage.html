@@ -157,6 +157,9 @@
                         </div>
                     </script>
 
+                    <div class="fragment no-blog">
+                        暂时没有微博
+                    </div>
                 </div>
             </div>
 
@@ -167,49 +170,12 @@
 
 </div>
 
-<div id="footer" class="container"></div>
+<div th:replace="base/base_temp_parts :: temp_footer"></div>
 
-<script id="script-blog-list-view" th:inline="javascript">
-    require([
-        "microblog",
-        "comment"
-    ], function (MicroBlog, Comment) {
-        var newMicroBlog = /*[[${items}]]*/ [],
-            ids = [],
-            each;
+<script th:inline="javascript" id="script-comment-render">
+    require(["microblog", "comment"], function (MicroBlog, Comment) {
 
-        MicroBlog.appendMicroBlogRender(function (microBlog, $blog) {
-
-            var rmBtn = $blog.querySelector(".blog-opera-remove");
-            if (window._current_user && window._current_user.id === microBlog.author.id && rmBtn) {
-
-                addEventListener(rmBtn, "click", function (event) {
-                    var target = event.currentTarget,
-                        microBlogId = target.dataset.microblogId;
-
-                    Alert.show({
-                        title: "删除?",
-                        text: "确定删除这条微博吗?",
-                        okButtonText: "删除",
-                        cancelButtonText: "取消",
-                        showCancelButton: true,
-                        closeOnOk: false,
-                        callback: function (result) {
-
-                            result && MicroBlog.removeMicroBlog(microBlogId, function () {
-                                var mbFrag = document.querySelector("div.fragment[data-microblog-id='"+ microBlogId +"']");
-
-                                mbFrag && mbFrag.remove();
-                            });
-                        }
-                    });
-
-                });
-            } else {
-                rmBtn.style.display = "none";
-                rmBtn.style.visibility = "hidden";
-            }
-        });
+        "use strict";
 
         function promptLogin() {
             Alert.show({
@@ -286,6 +252,49 @@
                 }
 
                 addEventListener($commentBtn, 'click', sendHandle);
+            }
+        });
+    });
+</script>
+
+<script id="script-blog-list-view" th:inline="javascript">
+    require(["microblog"], function (MicroBlog) {
+        "use strict";
+
+        var newMicroBlog = /*[[${items}]]*/ [],
+            ids = [],
+            each;
+
+        MicroBlog.appendMicroBlogRender(function (microBlog, $blog) {
+
+            var rmBtn = $blog.querySelector(".blog-opera-remove");
+            if (window._current_user && window._current_user.id === microBlog.author.id && rmBtn) {
+
+                addEventListener(rmBtn, "click", function (event) {
+                    var target = event.currentTarget,
+                        microBlogId = target.dataset.microblogId;
+
+                    Alert.show({
+                        title: "删除?",
+                        text: "确定删除这条微博吗?",
+                        okButtonText: "删除",
+                        cancelButtonText: "取消",
+                        showCancelButton: true,
+                        closeOnOk: false,
+                        callback: function (result) {
+
+                            result && MicroBlog.removeMicroBlog(microBlogId, function () {
+                                var mbFrag = document.querySelector("div.fragment[data-microblog-id='"+ microBlogId +"']");
+
+                                mbFrag && mbFrag.remove();
+                            });
+                        }
+                    });
+
+                });
+            } else {
+                rmBtn.style.display = "none";
+                rmBtn.style.visibility = "hidden";
             }
         });
 

@@ -15,6 +15,8 @@ body.bg-gradient {
 
 #main-content {
     background: url(../img/body_bg.jpg) no-repeat center 0;
+    -webkit-background-size: cover;
+    background-size: cover;
     padding-top: 46px;
 }
 
@@ -502,4 +504,34 @@ body.bg-gradient {
     width: 100%;
     line-height: 34px;
     background-color: #f2f2f5;
+}
+
+#go-top {
+    position: fixed;
+    display: inline-block;
+    right: 35px;
+    bottom: 45px;
+    cursor: pointer;
+    background-color: #ffa00a;
+    visibility: hidden;
+}
+
+#go-top > .icon {
+    font-size: 40px;
+    margin:0;
+}
+
+#go-top:hover {
+    background-color: #ff790d;
+}
+
+.no-blog {
+    background-color: #f2f2f5;
+    padding: 60px 0 20px;
+    text-align: center;
+    height: 120px;
+}
+
+.blog-frag ~ .no-blog {
+    display: none;
 }

@@ -48,7 +48,7 @@
 
         microblog.time = new Date(microblog.timestamp).format("{Y}年{mm}月{dd}日 {HH}:{MM}");
         console.log(microblog);
-        $blog = blogTemplate.renderDOM(microblog, "div");
+        $blog = blogTemplate.renderDOM(microblog)[0];
 
         for (i=0;i<renderProcesser.length;i++) {
             try {

@@ -102,7 +102,7 @@
 
 </div>
 
-<div id="footer" class="container"></div>
+<div th:replace="base/base_temp_parts :: temp_footer"></div>
 
 <script>
     require(['subscribe'], function (subscribe) {
@@ -115,6 +115,7 @@
         });
     });
 </script>
+<script th:replace="homepage :: #script-comment-render"></script>
 <script th:replace="homepage :: #script-blog-list-view"></script>
 </body>
 </html>

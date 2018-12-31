@@ -44,4 +44,27 @@
     </script>
 
 </head>
+
+<div id="footer" th:fragment="temp_footer">
+    <div id="go-top" data-href="body">
+        <i class="icon top"></i>
+    </div>
+    <script>
+        require(["lib/scroll"], function (scroll) {
+            var top = document.querySelector("#go-top");
+            scroll.handleAnchor(top);
+
+            addEventListener(document, "scroll", function (event) {
+                var scrollTop = scroll.top();
+
+                if (scrollTop <= 20) {
+                    top.style.visibility = "hidden";
+                } else {
+                    top.style.visibility = "visible";
+                }
+            });
+        });
+    </script>
+</div>
+
 </html>

@@ -273,3 +273,16 @@ function toggleClick(dom, fn) {
 
     return listener;
 }
+
+var animationsFunction = {
+    easeOut: function (t, b, c, d) {
+        return (c-b)*((t=t/d-1)*t*t + 1) + b;
+    },
+    easeIn: function(t,b,c,d){
+        return (c-b)*(t/=d)*t + b;
+    },
+    easeInOut: function(t,b,c,d){
+        if ((t/=d/2) < 1) return (c-b)/2*t*t + b;
+        return (b-c)/2 * ((--t)*(t-2) - 1) + b;
+    }
+};
