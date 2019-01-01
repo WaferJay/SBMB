@@ -537,6 +537,7 @@ body.bg-gradient {
     text-align: center;
     visibility: hidden;
     padding: 0;
+    margin: 0;
     height: 0;
 }
 
@@ -545,6 +546,7 @@ body.bg-gradient {
     font-size: 14px;
     padding: 12px 0;
     height: auto;
+    margin-bottom: 10px;
 }
 
 .loading-blog .icon {

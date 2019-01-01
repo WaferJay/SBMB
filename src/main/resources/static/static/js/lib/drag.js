@@ -49,7 +49,6 @@
 
         function handleDrop(event) {
             $current = null;
-            event.preventDefault();
             typeof cb === 'function' && cb(getTags());
         }
 
@@ -59,6 +58,8 @@
                 nextIndex,
                 currIndex,
                 overIndex;
+
+            event.preventDefault();
 
             if (target === $current) {
                 return;
