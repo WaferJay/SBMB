@@ -325,6 +325,17 @@
             subscribe = /*[[${#request.getParameter('mb_type') == 'sub'}]]*/ false,
             stop = false;
 
+        function queryStatus(data) {
+            var i,
+                ids = [];
+
+            for (i=0;i<data.items.length;i++) {
+                ids.push(data.items[i].id);
+            }
+
+            window._current_user && microBlog.queryLikeStatus(ids);
+        }
+
         function hide(data) {
             loading.classList.remove("show");
             if (currentPage >= data.total_pages) {
@@ -342,10 +353,13 @@
                 microBlog.fetchMicroBlog({
                     page: ++currentPage,
                     id: beforeId,
-                    callback: hide,
                     subscribe: subscribe,
                     userId: userId,
-                    tail: true
+                    tail: true,
+                    callback: function (data) {
+                        queryStatus(data);
+                        hide(data);
+                    }
                 });
             }, 1000);
         }
