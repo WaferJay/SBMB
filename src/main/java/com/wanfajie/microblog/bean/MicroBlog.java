@@ -45,7 +45,7 @@ public class MicroBlog {
     private List<Comment> comments;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(name = "mb_micro_blog_like_record",
             joinColumns = @JoinColumn(name = "micro_blog_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
