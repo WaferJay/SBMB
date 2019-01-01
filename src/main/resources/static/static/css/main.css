@@ -129,7 +129,8 @@ body.bg-gradient {
     color: white;
 }
 
-#c_left-menu ul > li:hover {
+#c_left-menu ul > li:hover,
+#c_left-menu ul > li.active {
     background-color: rgba(181, 240, 255, 0.4);
 }
 
@@ -212,6 +213,8 @@ body.bg-gradient {
 
 #blog-nav > #refresh-btn * {
     color: #fc864f;
+    display: inline-block;
+    width: 100%;
 }
 
 #blog-nav-list {

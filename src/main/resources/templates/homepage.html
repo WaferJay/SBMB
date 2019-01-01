@@ -23,11 +23,11 @@
         <div id="c_left-menu">
             <div class="left-menu-fill"></div>
             <div id="left-fixed-menu">
-                <ul class="menu-group">
-                    <li>首页</li>
-                    <li>我的收藏</li>
+                <ul class="menu-group list-cl">
+                    <li th:class="${#request.getParameter('mb_type') == null || #request.getParameter('mb_type') == 'all'} ? 'active' : ''" id="nav-mb-all"><a th:href="@{/home.html(mb_type='all')}">微博广场</a></li>
+                    <li th:class="${#request.getParameter('mb_type') == 'sub'} ? 'active' : ''" id="nav-mb-sub"><a th:href="@{/home.html(mb_type='sub')}">我的关注</a></li>
                 </ul>
-                <ul class="menu-group">
+                <ul class="menu-group list-cl">
                     <li>热门微博</li>
                     <li>热门话题</li>
                 </ul>
@@ -41,7 +41,7 @@
                         <textarea autocomplete="off" class="W_input" id="blog-editor" title="微博输入框" name="" style="height: 68px; font-size: 14px; overflow-wrap: break-word; line-height: 18px; overflow: hidden; outline: medium none;"></textarea>
                     </div>
                     <div class="input-control">
-                        <ul class="list-inline">
+                        <ul class="list-inline list-cl">
                             <li id="upload-image-btn">图片</li>
                             <li>话题</li>
                         </ul>
@@ -65,7 +65,7 @@
                         <li>视频</li>
                     </ul>
                     <div id="refresh-btn">
-                        <span>有新微博, 点击查看</span>
+                        <a href="javascript:window.location.reload();">有新微博, 点击查看</a>
                     </div>
                 </div>
 

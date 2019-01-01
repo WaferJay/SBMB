@@ -1,4 +1,5 @@
 * {margin: 0; padding: 0; color: #333}
+a {text-decoration: none; color: black;}
 
 ul,
 li {
@@ -42,6 +43,21 @@ ul.list-center,
 ul.list-center > li {
     margin: auto;
     text-align: center;
+}
+
+ul.list-cl > li {
+    cursor: pointer;
+}
+
+ul.list-cl > li:hover {
+    color: #ffa00a;
+}
+
+ul.list-cl > li > a {
+    display: inline-block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
 }
 
 .blur-bg,
