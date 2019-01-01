@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -40,7 +41,11 @@ public class PageController {
 
     @GetMapping("/login.html")
     public String loginPage(Model model) {
+        User currentUser = userService.getCurrentUser();
 
+        if (currentUser != null) {
+            return "redirect:/home.html";
+        }
         model.addAttribute("title", "用户登录");
         model.addAttribute("formType", "login-form");
         return "base/form_base";
@@ -48,8 +53,13 @@ public class PageController {
 
     @GetMapping("/home.html")
     @LoginRequired(redirect = true)
-    public String homePage(Model model) {
-        AjaxSingleResult<Map<String, Object>> result = mbController.getAllMicroBlog(1, 10, 0);
+    public String homePage(Model model, @RequestParam(value = "mb_type", defaultValue = "all") String type) {
+        AjaxSingleResult<Map<String, Object>> result;
+        if (type.equals("sub")) {
+            result = mbController.getSubMicroBlog(1, 10, 0);
+        } else {
+            result = mbController.getAllMicroBlog(1, 10, 0);
+        }
         Map<String, Object> data = result.getData();
         PageUtil.copyToModel(data, model);
 

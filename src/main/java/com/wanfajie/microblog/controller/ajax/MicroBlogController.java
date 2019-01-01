@@ -224,7 +224,7 @@ public class MicroBlogController {
 
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_SUB_FETCH)
     @LoginRequired
-    public AjaxResult getSubMicroBlog(
+    public AjaxSingleResult<Map<String, Object>> getSubMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int pageNum,
             @RequestParam(value = "limit", defaultValue = "10") int limit,
             @RequestParam(value = "mid", defaultValue = "0") long beforeMicroblogId) {

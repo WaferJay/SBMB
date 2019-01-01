@@ -216,7 +216,9 @@
                     id: options.id || 0
                 };
 
-                if (options.userId) {
+                if (options.subscribe) {
+                    url = mbAPIConf.MICROBLOG_SUBSCRIBE;
+                } else if (options.userId) {
                     url = mbAPIConf.MICROBLOG_USER.format({uid: options.userId});
                 }
 

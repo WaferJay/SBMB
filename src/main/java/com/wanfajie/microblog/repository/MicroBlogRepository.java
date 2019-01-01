@@ -11,14 +11,22 @@ import org.springframework.data.repository.query.Param;
 public interface MicroBlogRepository extends JpaRepository<MicroBlog, Long>, JpaSpecificationExecutor<MicroBlog> {
 
     @Query(value = "select mb.* from mb_microblog as mb " +
-            "inner join mb_user_subscribe as sub on mb.author_id = sub.following_id " +
-            "where sub.follower_id = :userId", nativeQuery = true)
+            "left join mb_user_subscribe as sub on mb.author_id = sub.following_id " +
+            "where sub.follower_id = :userId or mb.author_id = :userId",
+            countQuery = "select count(1) from mb_user_subscribe as sub " +
+                    "left join mb_microblog as mb on mb.author_id = sub.following_id " +
+                    "where sub.follower_id = :userId or mb.author_id = :userId",
+            nativeQuery = true)
     Page<MicroBlog> findSubscribeMicroBlog(@Param("userId") long userId, Pageable pageable);
 
     @Query(value = "select mb.* from mb_microblog as mb " +
-            "inner join mb_user_subscribe as sub " +
+            "left join mb_user_subscribe as sub " +
             "on mb.author_id = sub.following_id and mb.id <= :beforeId " +
-            "where sub.follower_id = :userId", nativeQuery = true)
+            "where sub.follower_id = :userId or mb.author_id = :userId",
+            countQuery = "select count(1) from mb_user_subscribe as sub " +
+                    "left join mb_microblog as mb on mb.author_id = sub.following_id and mb.id <= :beforeId " +
+                    "where sub.follower_id = :userId or mb.author_id = :userId",
+            nativeQuery = true)
     Page<MicroBlog> findSubscribeMicroBlog(@Param("userId") long userId,
                                            @Param("beforeId") long beforeId,
                                            Pageable pageable);

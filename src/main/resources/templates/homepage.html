@@ -322,6 +322,7 @@
             beforeId = document.querySelector(".blog-frag").dataset.microblogId,
             currentPage = /*[[${current_page}]]*/ 1,
             userId = /*[[${user} ? ${user.id} : null]]*/ null,
+            subscribe = /*[[${#request.getParameter('mb_type') == 'sub'}]]*/ false,
             stop = false;
 
         function hide(data) {
@@ -342,6 +343,7 @@
                     page: ++currentPage,
                     id: beforeId,
                     callback: hide,
+                    subscribe: subscribe,
                     userId: userId,
                     tail: true
                 });
