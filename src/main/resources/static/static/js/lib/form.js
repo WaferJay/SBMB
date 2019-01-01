@@ -85,7 +85,7 @@ var Form = (function () {
             },
 
             email: function (message) {
-                return formApp.validators.regexp(/^\w+@\w+(\\.\w+)?$/i, message);
+                return formApp.validators.regexp(/^\w+@\w+(\.\w+)?$/i, message);
             },
 
             length: function (options) {
