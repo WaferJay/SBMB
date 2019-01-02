@@ -1,7 +1,6 @@
 package com.wanfajie.microblog.util;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.UUID;
 
 public class FileUtil {
@@ -12,19 +11,6 @@ public class FileUtil {
 
     public static String getPwd() {
         return System.getenv("PWD");
-    }
-
-    public static String join(String p1, String... p2) {
-        if (p2 == null) return p1;
-
-        File file = new File(p1);
-
-        Path path = file.toPath();
-        for (String s : p2) {
-            path = path.resolve(s);
-        }
-
-        return path.toString();
     }
 
     public static boolean isAbsPath(String path) {
