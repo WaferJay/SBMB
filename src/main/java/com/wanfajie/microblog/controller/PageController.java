@@ -31,6 +31,11 @@ public class PageController {
     @Resource
     private MicroBlogService mbService;
 
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/login.html";
+    }
+
     @GetMapping("/signup.html")
     public String signUpPage(Model model) {
 

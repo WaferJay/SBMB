@@ -13,9 +13,23 @@
             </div>
             <div id="header-nav">
                 <ul class="list-inline">
+                    <li class="nav-brand" th:if="${session._current_logged_in_user}" th:text="${session._current_logged_in_user.name}"></li>
                     <li class="nav-brand">首页</li>
+                    <li th:if="${session._current_logged_in_user}" id="logout" class="nav-brand">退出</li>
                 </ul>
             </div>
+            <script th:if="${session._current_logged_in_user}" th:inline="javascript">
+                require(['lib/ajax'], function (ajax) {
+                    addEventListener(document.querySelector("#logout"), "click", function () {
+                        var logoutUrl = /*[[@{/ajax/user/logout}]]*/ null;
+                        logoutUrl && ajax({url: logoutUrl, method: 'post', success: function () {
+                            var loginUrl = /*[[@{/login.html}]]*/ null;
+                            loginUrl && (window.location.href = loginUrl);
+                        }});
+                    });
+
+                });
+            </script>
         </div>
     </div>
 
@@ -319,11 +333,13 @@
 
     require(["lib/scroll", "microblog"], function (scroll, microBlog) {
         var loading = document.querySelector(".loading-blog"),
-            beforeId = document.querySelector(".blog-frag").dataset.microblogId,
+            beforeId = document.querySelector(".blog-frag"),
             currentPage = /*[[${current_page}]]*/ 1,
             userId = /*[[${user} ? ${user.id} : null]]*/ null,
             subscribe = /*[[${#request.getParameter('mb_type') == 'sub'}]]*/ false,
             stop = false;
+
+        beforeId = beforeId ? beforeId.dataset.microblogId : 0;
 
         function queryStatus(data) {
             var i,

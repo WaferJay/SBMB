@@ -16,6 +16,9 @@
         <div th:replace="::renderFormField('password', '密码', 'password', '请填写密码', false)"></div>
         <div th:replace="::renderFormField('password2', '确认密码', 'password', '请再次填写密码', false)"></div>
 
+        <div style="text-align: right; padding: 0 44px;">
+            <a class="text-cl text-small" th:href="@{/login.html}">有账号? 去登录</a>
+        </div>
         <div class="center" id="reg-submit-wrap">
             <button type="submit" class="btn primary btn-big">立即注册</button>
         </div>
@@ -96,6 +99,9 @@
         <div th:replace="::renderFormField('username', '用户名', 'text', '请输入用户名', true)"></div>
         <div th:replace="::renderFormField('password', '密码', 'password', '请填写密码', false)"></div>
 
+        <div style="text-align: right; padding: 0 44px;">
+            <a class="text-cl text-small" th:href="@{/signup.html}">没有账号? 去注册</a>
+        </div>
         <div class="center" th:id="reg-submit-wrap">
             <button type="submit" class="btn primary btn-big">登录</button>
         </div>
