@@ -36,7 +36,7 @@ public class InterceptorConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/**");
 
         loginInterceptor.setJudge(request -> userService.getCurrentUser() != null);
-        loginInterceptor.setLoginUrl("/microblog/login.html");
+        loginInterceptor.setLoginUrl("/login.html");
 
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**");
