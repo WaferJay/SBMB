@@ -23,10 +23,38 @@
     function renderBlogComment(comment) {
         var dom,
             microBlogId = comment.microBlogId,
+            $delBtn,
             $list;
 
         comment.time = new Date().format("{Y}年{mm}月{dd}日 {HH}:{SS}");
         dom = template.renderDOM(comment)[0];
+
+        function removeCommentFn() {
+            dom.remove();
+        }
+
+        if (window._current_user && window._current_user.id === comment.user.id) {
+
+            $delBtn = dom.querySelector(config.commentDeleteSelector);
+            $delBtn.style.visibility = "visible";
+            addEventListener($delBtn, "click", function (event) {
+                var target = event.currentTarget,
+                    cid;
+
+                cid = target.dataset.commentId;
+                Alert.show({
+                    title: "删除?",
+                    text: "确定删除这条评论吗?",
+                    okButtonText: "删除",
+                    cancelButtonText: "算了",
+                    closeOnOk: false,
+                    showCancelButton: true,
+                    callback: function (result) {
+                        result && commentApp.deleteComment(cid, microBlogId, removeCommentFn);
+                    }
+                });
+            });
+        }
 
         $list = getCommentList(microBlogId);
 
@@ -59,15 +87,15 @@
                 }
             });
         },
-        deleteComment: function (commentId, microBlogId) {
+        deleteComment: function (commentId, microBlogId, cb) {
             ajaxFn({
-                url: commentAPIConf.COMMENT_BASE.format({mid: microBlogId}),
-                method: 'put',
+                url: commentAPIConf.COMMENT_SPECIFIC.format({mid: microBlogId || 0, id: commentId}),
+                method: 'delete',
                 dataType: 'json',
                 type: 'json',
-                data: {message: comment},
                 success: function (xhr, data) {
                     if (data.code === 0) {
+                        typeof cb === 'function' && cb();
                         al("删除成功");
                     } else {
                         showError();
@@ -129,5 +157,6 @@
     }
 })({
     templateSelector: "#template-comment-item",
-    commentListSelector: ".comment-list"
+    commentListSelector: ".comment-list",
+    commentDeleteSelector: ".comment-delete"
 });

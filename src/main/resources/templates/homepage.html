@@ -165,7 +165,12 @@
                                     <span>{message}</span>
                                 </div>
                                 <div class="comment-time">
-                                    <div class="text-small">{time}</div>
+                                    <div class="text-small">
+                                        {time}
+                                        <ul class="comment-control list-inline list-divide list-cl">
+                                            <li class="comment-delete" data-comment-id="{id}">删除</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

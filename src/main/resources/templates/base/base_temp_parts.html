@@ -24,7 +24,8 @@
                     MICROBLOG_SUBSCRIBE: [[@{/ajax/microblog/subscribed}]]
                 },
                 Comment: {
-                    COMMENT_BASE: [[@{/ajax/microblog/{mid}/comment}]]
+                    COMMENT_BASE: [[@{/ajax/microblog/{mid}/comment}]],
+                    COMMENT_SPECIFIC: [[@{/ajax/microblog/{mid}/comment/{id}}]]
                 },
                 Image: {
                     IMAGE_SPECIFIC_ID: [[@{/upload/images/{id}}]],

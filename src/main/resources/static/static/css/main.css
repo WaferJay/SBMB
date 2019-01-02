@@ -557,3 +557,11 @@ body.bg-gradient {
     width: 30px;
     height: 30px;
 }
+
+.comment-control {
+    float: right;
+}
+
+.comment-control > .comment-delete {
+    visibility: hidden;
+}
