@@ -213,17 +213,14 @@
                 urlParams = {
                     page: options.page || 1,
                     limit: options.limit || 10,
-                    id: options.id || 0
+                    mid: options.mid || 0,
+                    uid: options.uid || 0,
+                    mb_type: options.type || 'default'
                 };
 
-                if (options.subscribe) {
-                    url = mbAPIConf.MICROBLOG_SUBSCRIBE;
-                } else if (options.userId) {
-                    url = mbAPIConf.MICROBLOG_USER.format({uid: options.userId});
-                }
-
                 ajax({
-                    url: url + "?" + params(urlParams),
+                    url: url,
+                    params: urlParams,
                     method: 'get',
                     type: 'json',
                     success: function (xhr, data) {

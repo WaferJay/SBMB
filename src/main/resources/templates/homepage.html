@@ -42,7 +42,7 @@
                     <li th:class="${#request.getParameter('mb_type') == 'sub'} ? 'active' : ''" id="nav-mb-sub"><a th:href="@{/home.html(mb_type='sub')}">我的关注</a></li>
                 </ul>
                 <ul class="menu-group list-cl">
-                    <li>热门微博</li>
+                    <li th:class="${#request.getParameter('mb_type') == 'hot'} ? 'active' : ''"><a th:href="@{/home.html(mb_type='hot')}">热门微博</a></li>
                     <li>热门话题</li>
                 </ul>
             </div>
@@ -341,7 +341,7 @@
             beforeId = document.querySelector(".blog-frag"),
             currentPage = /*[[${current_page}]]*/ 1,
             userId = /*[[${user} ? ${user.id} : null]]*/ null,
-            subscribe = /*[[${#request.getParameter('mb_type') == 'sub'}]]*/ false,
+            type = /*[[${#request.getParameter('mb_type')}]]*/ 'default',
             stop = false;
 
         beforeId = beforeId ? beforeId.dataset.microblogId : 0;
@@ -373,9 +373,9 @@
 
                 microBlog.fetchMicroBlog({
                     page: ++currentPage,
-                    id: beforeId,
-                    subscribe: subscribe,
-                    userId: userId,
+                    mid: beforeId,
+                    type: type,
+                    uid: userId,
                     tail: true,
                     callback: function (data) {
                         queryStatus(data);

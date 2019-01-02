@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -31,6 +32,15 @@ import java.util.*;
 public class MicroBlogController {
 
     public static final Sort MICROBLOG_DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "id");
+
+    private static final Map<String, Sort> ORDER_BY_MAP;
+    static {
+        Map<String, Sort> sortMap = new HashMap<>();
+        sortMap.put("hot", Sort.by(Sort.Direction.DESC, "likeCount"));
+        sortMap.put("all", Sort.by(Sort.Direction.DESC, "id"));
+        sortMap.put("default", sortMap.get("all"));
+        ORDER_BY_MAP = Collections.unmodifiableMap(sortMap);
+    }
 
     @Resource
     private MicroBlogService mbService;
@@ -52,14 +62,22 @@ public class MicroBlogController {
         return new AjaxSingleResult<>(0, "成功", blog);
     }
 
-    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_BASE)
-    public AjaxSingleResult<Map<String, Object>> getAllMicroBlog(
+    //@GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_BASE)
+    private AjaxSingleResult<Map<String, Object>> getAllMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit,
-            @RequestParam(value = "id", defaultValue = "0") long id) {
-
+            @RequestParam(value = "id", defaultValue = "0") long id,
+            @RequestParam(value = "order_by", defaultValue = "id") String orderByField) {
         page -= 1;
-        Pageable pageable = PageRequest.of(page, limit, MICROBLOG_DEFAULT_SORT);
+
+        orderByField = orderByField == null ? "default" : orderByField;
+
+        Sort orderBy = ORDER_BY_MAP.get(orderByField);
+        if (orderBy == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        }
+
+        Pageable pageable = PageRequest.of(page, limit, orderBy);
         Page<MicroBlog> resultPage = mbService.findAll(pageable, id);
 
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(resultPage));
@@ -133,7 +151,7 @@ public class MicroBlogController {
     }
 
     @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_USER_FETCH)
-    public AjaxResult getUserMicroBlog(
+    public AjaxSingleResult<Map<String, Object>> getUserMicroBlog(
             @RequestParam(value = "page", defaultValue = "1") int pageNum,
             @RequestParam(value = "limit", defaultValue = "10") int limit,
             @PathVariable("userId") long userId) {
@@ -143,7 +161,7 @@ public class MicroBlogController {
         Pageable pageable = PageRequest.of(pageNum, limit, MICROBLOG_DEFAULT_SORT);
 
         if (user == null)
-            return new AjaxResult(1, "用户不存在");
+            return new AjaxSingleResult<>(1, "用户不存在");
 
         Page<MicroBlog> page = mbService.findByUserId(userId, pageable);
 
@@ -235,5 +253,26 @@ public class MicroBlogController {
                 PageRequest.of(pageNum, limit, MICROBLOG_DEFAULT_SORT));
 
         return new AjaxSingleResult<>(0, "成功", PageUtil.page2Map(page));
+    }
+
+    @GetMapping(AjaxURLConfig.MicroBlog.MICROBLOG_BASE)
+    public AjaxSingleResult<Map<String, Object>> getMicroBlog(
+            @RequestParam(value = "page", defaultValue = "1") int pageNum,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            @RequestParam(value = "mid", defaultValue = "0") long mbId,
+            @RequestParam(value = "uid", defaultValue = "0") long userId,
+            @RequestParam(value = "mb_type", defaultValue = "default") String type) {
+
+        switch (type) {
+            case "sub":
+                return getSubMicroBlog(pageNum, limit, mbId);
+            case "hot":
+            default:
+                if (userId != 0) {
+                    return getUserMicroBlog(pageNum, limit, userId);
+                } else {
+                    return getAllMicroBlog(pageNum, limit, userId, type);
+                }
+        }
     }
 }

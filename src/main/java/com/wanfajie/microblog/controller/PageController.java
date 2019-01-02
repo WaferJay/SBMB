@@ -59,12 +59,7 @@ public class PageController {
     @GetMapping("/home.html")
     @LoginRequired(redirect = true)
     public String homePage(Model model, @RequestParam(value = "mb_type", defaultValue = "all") String type) {
-        AjaxSingleResult<Map<String, Object>> result;
-        if (type.equals("sub")) {
-            result = mbController.getSubMicroBlog(1, 10, 0);
-        } else {
-            result = mbController.getAllMicroBlog(1, 10, 0);
-        }
+        AjaxSingleResult<Map<String, Object>> result = mbController.getMicroBlog(1, 10, 0, 0, type);
         Map<String, Object> data = result.getData();
         PageUtil.copyToModel(data, model);
 
