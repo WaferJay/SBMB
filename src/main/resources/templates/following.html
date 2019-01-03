@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="base/base_temp_parts :: temp_header(${user.name + ' 的' + title}, ~{})"></head>
+<body>
+
+<div id="main-content">
+
+    <div th:replace="homepage :: #header"></div>
+
+    <div class="container">
+
+        <div id="banner">
+
+            <div class="user-avatar">
+                <div class="avatar big"></div>
+            </div>
+
+            <div class="user-name">
+                <h2 th:text="${user.name}" id="banner-username"></h2>
+            </div>
+
+            <div class="user-control">
+                <ul class="list-inline list-center">
+                    <li th:unless="${user.equals(session._current_logged_in_user)}">
+                        <button id="subscribe-btn"
+                                data-th-data-toggle-text="${subscribed} ? '关注' : '已关注'"
+                                th:text="${subscribed} ? '已关注' : '关注'"
+                                data-th-data-user-id="${user.id}"
+                                data-toggle-class="disable"
+                                data-th-data-toggle-status="${subscribed}"
+                                th:class="'btn primary' + (${subscribed} ? ' disable' : '')"
+                                type="button">关注</button>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div id="content">
+
+            <div id="c_left-user_info">
+
+                <div th:replace="base/base_temp_parts :: user_overview(${user})"></div>
+                <div th:replace="base/base_temp_parts :: user_info(${user})"></div>
+
+            </div>
+
+            <div id="c_right-content">
+                <div class="fragment">
+
+                <h3 class="fragment-title" th:text="${user.name + ' 的' + title}"></h3>
+
+                <ul class="user-list" th:with="isFollowingPage = ${followingPage != null},
+                 content = ${followingPage != null ? followingPage.content : followerPage.content}">
+                    <li th:each="each : ${content}" class="fragment">
+                        <div class="blog-avatar-wrap">
+                            <a class="avatar" target="_blank" th:href="@{/u/{each.id}.html}"></a>
+                            <span class="avatar-name" th:text="${each.name}">用户名</span>
+                        </div>
+                        <div class="user-card-detail">
+                            <ul class="list-inline list-stretch list-divide">
+                                <li><a href="">
+                                    <h4 class="text-small">关注</h4>
+                                    <span class="text-small" th:text="${each.followingCount}">0</span>
+                                </a></li>
+                                <li><a href="">
+                                    <h4 class="text-small">粉丝</h4>
+                                    <span class="text-small" th:text="${each.followerCount}">0</span>
+                                </a></li>
+                                <li><a href="">
+                                    <h4 class="text-small">微博</h4>
+                                    <span class="text-small" th:text="${each.blogCount}">0</span>
+                                </a></li>
+                            </ul>
+
+                            <button style="margin: 10px 0 0 0"
+                                    th:if="${session._current_logged_in_user == null || !user.equals(session._current_logged_in_user)}"
+                                    class="btn primary btn-big full follow-btn"
+                                    data-th-data-user-id="${each.id}">关注</button>
+
+                            <button style="margin: 10px 0 0 0"
+                                    th:if="${user.equals(session._current_logged_in_user)}"
+                                    th:class="|btn primary btn-big full ${isFollowingPage ? 'unfollow-btn' : 'follow-btn'}|"
+                                    th:text="${isFollowingPage ? '取消关注' : '关注'}"
+                                    data-th-data-user-id="${each.id}">关注</button>
+                        </div>
+                    </li>
+
+                    <li th:if="${#lists.size(content) mod 2 == 1}" style="visibility: hidden;"></li>
+                </ul>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="base/base_temp_parts :: temp_footer"></div>
+
+<script th:replace="userpage :: #script-subscribe-user-from-userpage"></script>
+
+<script>
+    require(["subscribe"], function (sub) {
+       "use strict";
+
+       addEventListener(document.querySelectorAll(".follow-btn,.unfollow-btn"), "click", function (event) {
+           var target = event.currentTarget,
+               userId;
+
+           userId = target.dataset.userId;
+           if (target.classList.contains("follow-btn")) {
+               sub.sub(userId, function (d) {
+                   if (d.code === 0) {
+                       target.classList.remove("follow-btn");
+                       target.classList.add("unfollow-btn");
+                       target.innerText = "取消关注";
+                   }
+               });
+           } else if (target.classList.contains("unfollow-btn")) {
+               Alert.show({
+                   title: "取消关注?",
+                   okButtonText: "取消关注",
+                   cancelButtonText: "继续关注",
+                   showCancelButton: true,
+                   closeOnOk: false,
+                   callback: function (result) {
+                       result && sub.unsub(userId, function (d) {
+                           if (d.code === 0) {
+                               target.classList.remove("unfollow-btn");
+                               target.classList.add("follow-btn");
+                               target.innerText = "关注";
+                           }
+                       });
+                   }
+               });
+           } else {
+               console.warn("未知按钮: ", target);
+           }
+       });
+    });
+</script>
+</body>
+</html>

@@ -195,6 +195,13 @@ input.form-control {
     border-radius: 3px;
 }
 
+.btn.full {
+    width: 100%;
+    padding: 0;
+    line-height: 2em;
+    margin: 5px;
+}
+
 .center {
     margin: 0 auto;
     text-align: center;

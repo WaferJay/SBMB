@@ -32,7 +32,7 @@
                 dataType: "json",
                 type: "json",
                 success: function (xhr, data) {
-                    al("关注成功");
+                    data.code === 0 ? al("关注成功") : al(data.message);
                     typeof cb === 'function' && cb(data);
                 },
                 error: function (xhr, data) {

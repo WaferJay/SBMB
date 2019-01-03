@@ -7,6 +7,7 @@ import com.wanfajie.microblog.interceptor.login.annotation.LoginRequired;
 import com.wanfajie.microblog.service.MicroBlogService;
 import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.PageUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,7 +76,7 @@ public class PageController {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "没有这个用户");
         }
 
-        AjaxSingleResult<Map<String, Object>> result = (AjaxSingleResult<Map<String, Object>>) mbController.getUserMicroBlog(1, 10, user.getId());
+        AjaxSingleResult<Map<String, Object>> result = mbController.getUserMicroBlog(1, 10, user.getId());
         Map<String, Object> data = result.getData();
         PageUtil.copyToModel(data, model);
         model.addAttribute("user", user);
@@ -88,5 +89,37 @@ public class PageController {
     @ResponseBody
     public String blogDetailPage() {
         return "";
+    }
+
+    @GetMapping("/u/{id}/following")
+    public String followingList(
+            @PathVariable("id") long userId,
+            @RequestParam(value = "page", defaultValue = "1") int pageNum,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            Model model) {
+        pageNum--;
+        User user = userService.findById(userId);
+        Page<User> followingPage = userService.findFollowing(user, pageNum, limit);
+
+        model.addAttribute("title", "关注");
+        model.addAttribute("followingPage", followingPage);
+        model.addAttribute("user", user);
+        return "following";
+    }
+
+    @GetMapping("/u/{id}/follower")
+    public String followerList(
+            @PathVariable("id") long userId,
+            @RequestParam(value = "page", defaultValue = "1") int pageNum,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            Model model) {
+        pageNum--;
+        User user = userService.findById(userId);
+        Page<User> followerPage = userService.findFollower(user, pageNum, limit);
+
+        model.addAttribute("title", "粉丝");
+        model.addAttribute("followerPage", followerPage);
+        model.addAttribute("user", user);
+        return "following";
     }
 }

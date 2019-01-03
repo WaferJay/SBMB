@@ -92,16 +92,22 @@
 <div th:fragment="user_overview(user)" class="fragment">
     <ul id="user-overview" class="list-inline list-divide list-stretch">
         <li>
-            <h4>关注</h4>
-            <span class="text-small" th:text="${user.followingCount}">0</span>
+            <a th:href="@{/u/{id}/following(id=${user.id})}" target="_blank">
+                <h4>关注</h4>
+                <span class="text-small" th:text="${user.followingCount}">0</span>
+            </a>
         </li>
         <li>
-            <h4>粉丝</h4>
-            <span class="text-small" th:text="${user.followerCount}">0</span>
+            <a th:href="@{/u/{id}/follower(id=${user.id})}" target="_blank">
+                <h4>粉丝</h4>
+                <span class="text-small" th:text="${user.followerCount}">0</span>
+            </a>
         </li>
         <li>
-            <h4>微博</h4>
-            <span class="text-small" th:text="${user.blogCount}">0</span>
+            <a th:href="@{/u/{id}.html(id=${user.id})}" target="_blank">
+                <h4>微博</h4>
+                <span class="text-small" th:text="${user.blogCount}">0</span>
+            </a>
         </li>
     </ul>
 </div>

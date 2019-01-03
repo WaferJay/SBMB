@@ -2,17 +2,29 @@
 function addEventListener(target, event, fn, useCapture) {
     var parts = event.split(","),
         each,
-        i;
+        i,
+        j;
+
+    if (!target) return;
+    if (!(target instanceof NodeList)) {
+        target = [target];
+    }
 
     for (i=0;i<parts.length;i++) {
         each = parts[i].trim();
 
         if (target.addEventListener) {
-            target.addEventListener(each, fn, useCapture);
+            for (j=0;j<target.length;j++) {
+                target[j].addEventListener(each, fn, useCapture);
+            }
         } else if (target.attachEvent) {
-            target.attachEvent("on"+each, fn);
+            for (j=0;j<target.length;j++) {
+                target[j].attachEvent("on"+each, fn);
+            }
         } else {
-            target["on"+each] = fn;
+            for (j=0;j<target.length;j++) {
+                target[j]["on"+each] = fn;
+            }
         }
     }
 }
@@ -20,17 +32,29 @@ function addEventListener(target, event, fn, useCapture) {
 function removeEventListener(target, event, fn) {
     var parts = event.split(","),
         each,
-        i;
+        i,
+        j;
+
+    if (!target) return;
+    if (!(target instanceof NodeList)) {
+        target = [target];
+    }
 
     for (i=0;i<parts.length;i++) {
         each = parts[i].trim();
 
         if (target.removeEventListener) {
-            target.removeEventListener(each, fn);
+            for (j=0;j<target.length;j++) {
+                target[j].removeEventListener(each, fn);
+            }
         } else if (target.detachEvent) {
-            target.detachEvent("on" + each, fn);
+            for (j=0;j<target.length;j++) {
+                target[j].detachEvent("on" + each, fn);
+            }
         } else {
-            target["on" + each] = null;
+            for (j=0;j<target.length;j++) {
+                target[j]["on" + each] = null;
+            }
         }
     }
 }
