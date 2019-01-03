@@ -46,15 +46,14 @@
             </div>
 
             <div id="c_right-content">
-                <div class="fragment">
+                <div class="fragment" th:with="page = ${followingPage != null ? followingPage : followerPage}">
 
                 <h3 class="fragment-title" th:text="${user.name + ' 的' + title}"></h3>
 
-                <ul class="user-list" th:with="isFollowingPage = ${followingPage != null},
-                 content = ${followingPage != null ? followingPage.content : followerPage.content}">
+                <ul class="user-list" th:with="isFollowingPage = ${followingPage != null}, content = ${page.content}">
                     <li th:each="each : ${content}" class="fragment">
                         <div class="blog-avatar-wrap">
-                            <a class="avatar" target="_blank" th:href="@{/u/{each.id}.html}"></a>
+                            <a class="avatar" target="_blank" th:href="@{/u/${each.id}.html}"></a>
                             <span class="avatar-name" th:text="${each.name}">用户名</span>
                         </div>
                         <div class="user-card-detail">
@@ -89,6 +88,7 @@
                     <li th:if="${#lists.size(content) mod 2 == 1}" style="visibility: hidden;"></li>
                 </ul>
 
+                <div th:replace="base/base_temp_parts :: pagination(${page}, 1, 1)"></div>
                 </div>
             </div>
 

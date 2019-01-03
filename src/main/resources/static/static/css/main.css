@@ -587,6 +587,7 @@ body.bg-gradient {
     display: flex;
     flex-direction:row;
     flex-wrap: wrap;
+    min-height: 110px;
 }
 
 .user-list > * {
@@ -602,4 +603,14 @@ body.bg-gradient {
 
 .user-card-detail * {
     line-height: 1em;
+}
+
+.pagin-list > .current {
+    color: #ff790d;
+}
+
+.pagin-list > .disable,
+.pagin-list > .disable:hover {
+    color: #888;
+    cursor: default;
 }

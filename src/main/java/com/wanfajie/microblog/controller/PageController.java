@@ -1,5 +1,6 @@
 package com.wanfajie.microblog.controller;
 
+import com.wanfajie.microblog.bean.MicroBlog;
 import com.wanfajie.microblog.bean.User;
 import com.wanfajie.microblog.controller.ajax.MicroBlogController;
 import com.wanfajie.microblog.controller.ajax.result.AjaxSingleResult;
@@ -8,6 +9,7 @@ import com.wanfajie.microblog.service.MicroBlogService;
 import com.wanfajie.microblog.service.UserService;
 import com.wanfajie.microblog.util.PageUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

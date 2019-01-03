@@ -111,4 +111,75 @@
         </li>
     </ul>
 </div>
+
+<div th:fragment="pagination(page, headTailCount, prevNextCount)"
+     th:with="currentPage = ${page.number + 1},
+      totalPages = ${page.totalPages <= 0 ? 1 : page.totalPages}" class="pagination">
+    <ul class="list-inline list-center list-cl pagin-list"
+        th:if="${totalPages <= headTailCount * 2 + prevNextCount * 2 + 1}">
+        <li th:class="${page.hasPrevious() ? '' : 'disable'}">
+            <a th:if="${page.hasPrevious()}" th:href="@{?(page=${currentPage - 1})}" href="javascript:void(0);">上一页</a>
+            <a th:unless="${page.hasPrevious()}" href="javascript:void(0);">上一页</a>
+        </li>
+        <li th:if="${totalPages <= headTailCount * 2 + prevNextCount * 2 + 1}"
+            th:each="i : ${#numbers.sequence(1, totalPages)}"
+            th:class="${i == currentPage ? 'current' : ''}">
+            <a th:href="@{?(page=${i})}" th:text="${i}"></a>
+        </li>
+        <li th:class="${page.hasNext() ? '' : 'disable'}">
+            <a th:if="${page.hasNext()}" th:href="@{?(page=${currentPage+1})}" href="javascript:void(0);">下一页</a>
+            <a th:unless="${page.hasNext()}" href="javascript:void(0);">下一页</a>
+        </li>
+    </ul>
+    <ul th:if="${totalPages > headTailCount * 2 + prevNextCount * 2 + 1}"
+        class="list-inline list-center list-cl pagin-list">
+
+        <li th:class="${page.hasPrevious() ? '' : 'disable'}">
+            <a th:if="${page.hasPrevious()}" th:href="@{?(page=${currentPage - 1})}" href="javascript:void(0);">上一页</a>
+            <a th:unless="${page.hasPrevious()}" href="javascript:void(0);">上一页</a>
+        </li>
+
+        <!-- if currentPage <= 2 + 1 + 1-->
+        <li th:unless="${currentPage gt headTailCount + prevNextCount + 1}"
+            th:each="i : ${#numbers.sequence(1, currentPage + prevNextCount)}"
+            th:class="${i == currentPage ? 'current' : ''}">
+            <a th:href="@{?(page=${i})}" th:text="${i + '1i'}"></a>
+        </li>
+        <!-- else -->
+        <li th:if="${currentPage gt headTailCount + prevNextCount + 1}"
+            th:each="i : ${#numbers.sequence(1, headTailCount)}"
+            th:class="${i == currentPage ? 'current' : ''}">
+            <a th:href="@{?(page=${i})}" th:text="${i + '1e'}"></a>
+        </li>
+        <li th:if="${currentPage gt headTailCount + prevNextCount + 1}" class="disable">...</li>
+        <!-- endif -->
+
+        <li th:if="${currentPage gt headTailCount + prevNextCount + 1
+         && currentPage < totalPages - headTailCount - prevNextCount}"
+            th:each="i : ${#numbers.sequence(currentPage - prevNextCount, currentPage + prevNextCount)}"
+            th:class="${i == currentPage ? 'current' : ''}">
+            <a th:href="@{?(page=${i})}" th:text="${i + 'ie'}"></a>
+        </li>
+
+        <!--if currentPage >= 2 + 1 + 1-->
+        <li th:unless="${currentPage lt totalPages - headTailCount - prevNextCount}"
+            th:each="i : ${#numbers.sequence(currentPage - prevNextCount, totalPages)}"
+            th:class="${i == currentPage ? 'current' : ''}">
+            <a th:href="@{?(page=${i})}" th:text="${i + '2i'}"></a>
+        </li>
+        <!-- else -->
+        <li th:if="${currentPage lt totalPages - headTailCount - prevNextCount}" class="disable">...</li>
+        <li th:if="${currentPage lt totalPages - headTailCount - prevNextCount}"
+            th:each="i : ${#numbers.sequence(totalPages - headTailCount + 1, totalPages)}"
+            th:class="${i == currentPage ? 'current' : ''}">
+            <a th:href="@{?(page=${i})}" th:text="${i + '2e'}"></a>
+        </li>
+        <!-- endif -->
+
+        <li th:class="${page.hasNext() ? '' : 'disable'}">
+            <a th:if="${page.hasNext()}" th:href="@{?(page=${currentPage+1})}" href="javascript:void(0);">下一页</a>
+            <a th:unless="${page.hasNext()}" href="javascript:void(0);">下一页</a>
+        </li>
+    </ul>
+</div>
 </html>
