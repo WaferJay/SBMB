@@ -13,16 +13,12 @@ function addEventListener(target, event, fn, useCapture) {
     for (i=0;i<parts.length;i++) {
         each = parts[i].trim();
 
-        if (target.addEventListener) {
-            for (j=0;j<target.length;j++) {
+        for (j=0;j<target.length;j++) {
+            if (target[j].addEventListener) {
                 target[j].addEventListener(each, fn, useCapture);
-            }
-        } else if (target.attachEvent) {
-            for (j=0;j<target.length;j++) {
+            } else if (target[j].attachEvent) {
                 target[j].attachEvent("on"+each, fn);
-            }
-        } else {
-            for (j=0;j<target.length;j++) {
+            } else {
                 target[j]["on"+each] = fn;
             }
         }
@@ -43,16 +39,12 @@ function removeEventListener(target, event, fn) {
     for (i=0;i<parts.length;i++) {
         each = parts[i].trim();
 
-        if (target.removeEventListener) {
-            for (j=0;j<target.length;j++) {
+        for (j=0;j<target.length;j++) {
+            if (target[j].removeEventListener) {
                 target[j].removeEventListener(each, fn);
-            }
-        } else if (target.detachEvent) {
-            for (j=0;j<target.length;j++) {
+            } else if (target[j].detachEvent) {
                 target[j].detachEvent("on" + each, fn);
-            }
-        } else {
-            for (j=0;j<target.length;j++) {
+            } else {
                 target[j]["on" + each] = null;
             }
         }
