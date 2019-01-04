@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 public class CommentController {
 
-private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
+    private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
 
     @Resource
     private UserService userService;
@@ -124,7 +124,7 @@ private static final Sort SORT = Sort.by(Sort.Order.desc("id"));
         }
 
         User currentUser = userService.getCurrentUser();
-        if (!comment.getUser().equals(currentUser) ||
+        if (!comment.getUser().equals(currentUser) &&
                 !comment.getMicroBlog().getAuthor().equals(currentUser)) {
 
             return new AjaxResult(403, "你没有权限删除该评论");
