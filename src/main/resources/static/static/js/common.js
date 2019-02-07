@@ -62,7 +62,7 @@ Date.method("toDict", function () {
     var result = {
         y: this.getFullYear() - 2000,
         Y: this.getFullYear(),
-        m: this.getMonth(),
+        m: this.getMonth() + 1,
         d: this.getDate(),
         H: this.getHours(),
         M: this.getMinutes(),
